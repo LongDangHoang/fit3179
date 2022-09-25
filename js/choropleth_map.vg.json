@@ -25,46 +25,37 @@
           "feature": "ne_110m_admin_0_countries"
         }
       },
-      "projection": {
-        "type": "equalEarth"
-      },
-       "mark": {
-         "type": "geoshape", 
-         "fill": "lightgrey",
-         "stroke": "white"
-        }
-    },
-    {
-      "data": {
-        "url": "https://raw.githubusercontent.com/LongDangHoang/fit3179/master/data/processed/cereal_yield_per_country_2015-2020.csv"
-      },
       "transform": [
+        {
+          "lookup": "properties.NAME",
+          "from": {
+            "data": {
+              "url": "https://raw.githubusercontent.com/LongDangHoang/fit3179/master/data/processed/cereal_yield_per_country_2015-2020.csv"
+            },
+            "key": "Area",
+            "fields": ["Y2020"]
+          }
+        },
         {
           "calculate": "datum.Y2020 / 10000", 
           "as": "Cereal Yield (tonnes/ha)"
         }
       ],
+      "projection": {
+        "type": "equalEarth"
+      },
       "mark": {
-        "type": "circle",
-        "opacity": 1
+        "type": "geoshape",
+        "stroke": "lightgrey"
       },
       "encoding": {
-        "longitude": {"field": "longitude", "type": "quantitative"},
-        "latitude": {"field": "latitude", "type": "quantitative"},
-        "size": {
-          "field": "Cereal Yield (tonnes/ha)",
-          "type": "quantitative",
-          "title": "Cereal Yield (tonnes/ha)"
-        },
         "color": {
           "field": "Cereal Yield (tonnes/ha)",
-          "type": "quantitative",
-          "title": "Cereal Yield (tonnes/ha)",
-          "scale": {"scheme": "blues"}
+          "type": "quantitative"
         },
         "tooltip": [
-          {"field": "Area", "title": "Country"},
-          {"field": "Cereal Yield (tonnes/ha)", "title": "Cereal Yield (tonnes/ha)"}
+          {"field": "properties.NAME", "type": "nominal", "title": "Country"},
+          {"field": "Cereal Yield (tonnes/ha)", "type": "quantitative"}
         ]
       }
     }
