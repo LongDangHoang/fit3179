@@ -1,70 +1,72 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "title": "Production of Cereal in 2020",
-  "width": 800,
-  "height": 400,
-  "projection": {"type": "equalEarth"},
-  "data": [
+  "width": 500,
+  "height": 300,
+  "title": "Cereal production yield (tonnes/ha) in 2020",
+
+  "layer": [
     {
-      "name": "countries",
-      "url": "https://raw.githubusercontent.com/LongDangHoang/fit3179/master/data/ne_110m.json",
-      "format": {"type": "topojson", "feature": "ne_110m_admin_0_countries"},
-      "transform": [
-        {
-          "lookup": "properties.NAME",
-          "from": {
-            "data": {
-              "url": "https://raw.githubusercontent.com/LongDangHoang/fit3179/master/data/processed/cereal_production_per_country_2015-2020.csv"
-            },
-            "key": "Area",
-            "fields": ["Y2020"]
-          }
-        },
-        {"calculate": "datum.Y2020", "as": "Cereal Production (tonnes)"}
-      ]
-    },
-    {
-      "name": "graticule",
-      "transform": [
-        {
-          "type": "graticule",
+      "data": {
+        "graticule": {
           "step": [30, 30]
         }
-      ]
-    }
-  ],
-  "marks": [
-    {
-      "type": "shape",
-      "from": {"data": "graticule"},
-      "encode": {
-        "update": {
-          "strokeWidth": {"value": 1},
-          "stroke": {"value": "#ddd"},
-          "fill": {"value": null}
-        }
       },
-      "transform": [
-        { "type": "geoshape", "projection": "projection" }
-      ]
+      "mark": "geoshape",
+      "encoding": {
+        "strokeWidth": {"value": 0.5},
+        "stroke": {"value": "#bbb"}
+      }
     },
     {
-      "type": "shape",
-      "from": {"data": "countries"},
-      "encode": {
-        "color": {
-          "field": "Cereal Production (tonnes)",
-          "type": "quantitative",
-          "scale": {"type": "log"}
+      "data": {
+        "url": "https://raw.githubusercontent.com/LongDangHoang/fit3179/master/data/ne_110m.json",
+        "format": {
+          "type": "topojson",
+          "feature": "ne_110m_admin_0_countries"
         }
       },
+      "projection": {
+        "type": "equalEarth"
+      },
+       "mark": {
+         "type": "geoshape", 
+         "fill": "lightgrey",
+         "stroke": "white"
+        }
+    },
+    {
+      "data": {
+        "url": "https://raw.githubusercontent.com/LongDangHoang/fit3179/master/data/processed/cereal_yield_per_country_2015-2020.csv"
+      },
       "transform": [
-        { "type": "geoshape", "projection": "projection" }
+        {
+          "calculate": "datum.Y2020 / 10000", 
+          "as": "Cereal Yield (tonnes/ha)"
+        }
       ],
-      "tooltip": [
-        {"field": "datum.Area", "type": "nominal", "title": "Country"},
-        {"field": "Cereal Production (tonnes)", "type": "quantitative"}
-      ]
+      "mark": {
+        "type": "circle",
+        "opacity": 1
+      },
+      "encoding": {
+        "longitude": {"field": "longitude", "type": "quantitative"},
+        "latitude": {"field": "latitude", "type": "quantitative"},
+        "size": {
+          "field": "Cereal Yield (tonnes/ha)",
+          "type": "quantitative",
+          "title": "Cereal Yield (tonnes/ha)"
+        },
+        "color": {
+          "field": "Cereal Yield (tonnes/ha)",
+          "type": "quantitative",
+          "title": "Cereal Yield (tonnes/ha)",
+          "scale": {"scheme": "blues"}
+        },
+        "tooltip": [
+          {"field": "Area", "title": "Country"},
+          {"field": "Cereal Yield (tonnes/ha)", "title": "Cereal Yield (tonnes/ha)"}
+        ]
+      }
     }
   ]
 }
