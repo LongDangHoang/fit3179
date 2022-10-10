@@ -16,7 +16,10 @@
       }
     }
   ],
-  "title": "Production of Cereal (2000-2020)",
+  "title": {
+    "text": "Production of Cereal (2000-2020)",
+    "anchor": "middle"
+  },
   "hconcat": [
     {
       "width": 600,
@@ -153,17 +156,20 @@
               "mark": "point",
               "encoding": {
                 "color":  {"value": "purple"},
-                "size": {"value": 70}
+                "size": {"value": 90}
               }
             },
             {
               "mark": {
                 "type": "text",
-                "align": "right",
-                "dx": -8,
-                "dy": -8,
+                "align": "center",
+                "dx": -20,
+                "dy": 70,
                 "baseline": "middle",
-                "fontStyle": "italic"
+                "fontStyle": "italic",
+                "fontWeight": "bolder",
+                "angle": 0,
+                "color": "purple"
               },
               "encoding": {
                 "text": {"field": "text_annotation"}
@@ -174,7 +180,7 @@
       ]
     },
     {
-      "width": 475,
+      "width": 275,
       "height": 260,
       "transform": [
         {"filter": "datum.Element == 'Yield'"},
@@ -225,11 +231,11 @@
               "mark": {
                 "type": "text",
                 "align": "right",
-                "dx": -8,
+                "dx": 0,
                 "dy": 40,
                 "baseline": "middle",
                 "fontStyle": "italic",
-                "fontSize": 15,
+                "fontSize": 16,
                 "color": "blue"
               },
               "transform": [
@@ -253,17 +259,18 @@
             {
               "mark": {
                 "type": "text",
-                "align": "center",
+                "align": "left",
                 "dx": -8,
                 "dy": 10,
                 "baseline": "middle",
                 "fontStyle": "italic",
-                "fontSize": 15,
+                "fontSize": 9,
                 "color": "blue"
               },
               "transform": [
                 {"filter": "datum.Year == Year_Filter"},
-                {"calculate": "'Cereal Yield (tonnes/ha): ' + datum['Cereal Yield (tonnes/ha)']", "as": "text_annotation"}
+                {"calculate": "'Cereal Yield:;' + datum['Cereal Yield (tonnes/ha)'] + ' (tonnes/ha)'", "as": "text_annotation_raw"},
+                {"calculate": "split(datum.text_annotation_raw, ';')", "as": "text_annotation"}
               ],
               "encoding": {
                 "text": {"field": "text_annotation"},
