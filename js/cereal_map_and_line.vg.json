@@ -180,7 +180,7 @@
       ]
     },
     {
-      "width": 275,
+      "width": 250,
       "height": 260,
       "transform": [
         {"filter": "datum.Element == 'Yield'"},
