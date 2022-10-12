@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>FIT3179 - Assignment 2 - Long Dang</title>
+  <!-- Import Vega & Vega-Lite (does not have to be from CDN) -->
+  <script src="https://cdn.jsdelivr.net/npm/vega@5.20.2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-lite@5.1.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.17.0"></script>
+
+  <!-- Import pure.css -->
+  <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.3/build/pure-min.css"
+    integrity="sha384-cg6SkqEOCV1NbJoCu11+bm0NvBRc8IYLRGXkmNrqUBfTjmMYwNKPWBTIKyw9mHNJ" crossorigin="anonymous">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Google font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+
+  <!-- CSS file -->
+  <link rel="stylesheet" type="text/css" href="css/styles.css" media="all">
+</head>
+
+<body>
+
+  <div class="page">
+    <!-- Title row -->
+    <div class="pure-g">
+      <div class="pure-u-1-1">
+        <div style="text-align: center;">
+          <h1>TITLE</h1>
+          <h2>Title Subtext lorem ispum dolor sit amet.</h2>
+        </div>
+      </div>
+    </div>
+
+    <!-- preface row -->
+    <div class="pure-g">
+      <div class="pure-u-1-3">
+        <div class="description description-left">
+          <p>Lorem ipsum dolor sit amet,
+            consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Massa sapien
+            faucibus et molestie ac feugiat sed. Egestas purus viverra accumsan in nisl
+          </p>
+        </div>
+      </div>
+      <div class="pure-u-2-3">
+        <div id="vis_map_year"></div>
+      </div>
+    </div>
+
+    <!-- factored geometrey row-->
+    <div class="pure-g">
+      <div class="pure-u-1-3">
+        <div id="vis_map_factored_year"></div>
+      </div>
+      <div class="pure-u-2-3">
+        <div class="description description-right">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+            tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim 
+            veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
+            ea commodo consequat. Duis aute irure dolor in reprehenderit in 
+            voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
+            Excepteur sint occaecat cupidatat non proident, sunt in culpa 
+            qui officia deserunt mollit anim id est laborum.
+        </div>
+      </div>
+    </div>
+
+    <!-- Summary row -->
+    <div class="pure-g">
+        <div class="pure-u-1-3">
+            <div class="description description-left">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+                tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim 
+                veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
+                ea commodo consequat. Duis aute irure dolor in reprehenderit in 
+                voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
+                Excepteur sint occaecat cupidatat non proident, sunt in culpa 
+                qui officia deserunt mollit anim id est laborum.
+            </div>
+        </div>
+        <div class="pure-u-1-3">
+            <div id="vis_summary_growth_1"></div>
+        </div>
+        <div class="pure-u-1-3">
+            <div id="vis_summary_growth_2"></div>
+        </div>
+    </div>
+
+    <br/>
+    <!-- Transtion row-->
+    <div class="pure-g">
+        <div class="pure-u-1-1">
+            <div class="description">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+                tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim 
+                veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
+                ea commodo consequat. Duis aute irure dolor in reprehenderit in 
+                voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
+                Excepteur sint occaecat cupidatat non proident, sunt in culpa 
+                qui officia deserunt mollit anim id est laborum.
+            </div>
+        </div>
+    </div>
+
+    <!-- large linked map -->
+    <div class="pure-g">
+        <div class="pure-u-1-1">
+            <divi id="vis_map_type_linked"></div>
+        <div>
+    </div>
+
+    <!-- Further description -->
+    <div class="pure-g">
+        <div class="pure-u-1-3">
+            <div class="description description-left">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+                tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim 
+                veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
+                ea commodo consequat. Duis aute irure dolor in reprehenderit in 
+                voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
+                Excepteur sint occaecat cupidatat non proident, sunt in culpa 
+                qui officia deserunt mollit anim id est laborum.
+            </div>
+        </div>
+        <div class="pure-u-1-3">
+            <div id="vis_summary_type_1"></div>
+        </div>
+        <div class="pure-u-1-3">
+            <div id="vis_summary_type_2"></div>
+        </div>
+    </div>
+
+    <!-- Treemap row -->
+    <div class="pure-g">
+        <div class="pure-u-2-3">
+            <div id="vis_treemap_type"></div>
+        </div>
+        <div class="pure-u-1-3">
+            <div class="description description-right">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+                tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim 
+                veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
+                ea commodo consequat. Duis aute irure dolor in reprehenderit in 
+                voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
+                Excepteur sint occaecat cupidatat non proident, sunt in culpa 
+                qui officia deserunt mollit anim id est laborum.
+            </div>
+        </div>
+    </div>
+
+  </div> <!-- end page -->
+
+  <script type="text/javascript">
+    var specVis1 = "./js/cereal_map_and_line.vg.json";
+    vegaEmbed('#vis_map_type_linked', specVis1, { "actions": false }).then(function (result) {
+      // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
+    }).catch(console.error);
+  </script>
+</body>
+
+</html>
