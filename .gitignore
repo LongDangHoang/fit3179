@@ -1,3 +1,3 @@
 data/*
 !data/processed/
-!data/ne_110m.json
+!data/*_geo.json
