@@ -1,0 +1,117 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "width": 250,
+    "height": 400,
+    "title": "Production of foodstuff (tonnes) over time",
+  
+    "data": {
+      "url": "https://raw.githubusercontent.com/LongDangHoang/fit3179/master/data/processed/yield_major_categories_per_country_2000-2020.csv"
+    },
+    "params": [
+      {
+        "name": "Year_Filter",
+        "value": 2020,
+        "bind": {
+          "input": "range",
+          "min": 2000,
+          "max": 2020,
+          "step": 1,
+          "name": "Year"
+        }
+      },
+      {
+        "name": "Product_Type",
+        "value": "Cereals, Total",
+        "bind": {
+          "input": "select",
+          "options": [
+            "Cereals, Total",
+            "Citrus Fruit, Total",
+            "Pulses, Total",
+            "Roots and Tubers, Total",
+            "Treenuts, Total"
+          ],
+          "labels": [
+            "Cereals",
+            "Citrus Fruit",
+            "Pulses",
+            "Roots and Tubers",
+            "Treenuts"
+          ],
+          "name": "Product Selection: "
+        }
+      }
+    ],
+  
+    "projection": {
+      "type": "naturalEarth1"
+    },
+    
+    "layer": [
+      {
+        "data": {
+          "url": "https://raw.githubusercontent.com/LongDangHoang/fit3179/master/data/america_geo.json",
+          "format": {
+            "type": "topojson",
+            "feature": "america_geo"
+          }
+        },
+        "mark": {
+          "type": "geoshape",
+          "fill": "lightgray"
+        },
+        "transform": [
+          {
+              "calculate": "'Data is not available for ' + datum.properties.admin",
+              "as": "note"
+          }
+        ],
+        "encoding": {
+          "tooltip": {"field": "note"}
+        }
+      },
+      {
+        "transform": [
+          {
+            "lookup": "Area",
+            "from": {
+              "data": {
+                "url": "https://raw.githubusercontent.com/LongDangHoang/fit3179/master/data/america_geo.json",
+                "format": {
+                  "type": "topojson",
+                  "feature": "america_geo"
+                }
+              },
+              "key": "properties.admin"
+            },
+            "as": "geo"
+          },
+          {"filter": "datum.Item == Product_Type"},
+          {"filter": "datum.Year == Year_Filter"},
+          {
+            "calculate": "datum.Quantity / 10000", 
+            "as": "Yield (tonnes/ha)"
+          }
+        ],
+        "mark": {
+          "type": "geoshape",
+          "stroke": "lightgrey"
+        },
+        "encoding": {
+          "shape": {"field": "geo", "type": "geojson"},
+          "color": {
+            "field": "Yield (tonnes/ha)",
+            "type": "quantitative",
+            "scale": {
+              "type": "threshold",
+              "domain": [1, 2, 3, 4, 5, 10]
+            }
+          },
+          "tooltip": [
+            {"field": "Area", "type": "nominal", "title": "Country"},
+            {"field": "Yield (tonnes/ha)", "type": "quantitative"}
+          ]
+        }
+      }
+    ]
+}
