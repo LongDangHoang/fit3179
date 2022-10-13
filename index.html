@@ -90,6 +90,7 @@
           <span class="dot" onclick="currentSlide(2)"></span>
           <span class="dot" onclick="currentSlide(3)"></span>
           <span class="dot" onclick="currentSlide(4)"></span>
+          <span class="dot" onclick="currentSlide(5)"></span>
         </div>
       </div>
       <div class="pure-u-3-5">
@@ -192,30 +193,12 @@
 
   <script type="text/javascript">
 
-    var factored_map_america = "./js/choropleth_map_factored_america.vg.json"
-    vegaEmbed('#vis_map_factored_america', factored_map_america, { "actions": false }).then(function (result) {
-      // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
-    }).catch(console.error);
-
-    var factored_map_africa = "./js/choropleth_map_factored_africa.vg.json"
-    vegaEmbed('#vis_map_factored_africa', factored_map_africa, { "actions": false }).then(function (result) {
-      // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
-    }).catch(console.error);
-
-    var factored_map_europe = "./js/choropleth_map_factored_europe.vg.json"
-    vegaEmbed('#vis_map_factored_europe', factored_map_europe, { "actions": false }).then(function (result) {
-      // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
-    }).catch(console.error);
-
-    var factored_map_asia = "./js/choropleth_map_factored_asia.vg.json"
-    vegaEmbed('#vis_map_factored_europe', factored_map_asia, { "actions": false }).then(function (result) {
-      // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
-    }).catch(console.error);
-
-    var factored_map_oceania = "./js/choropleth_map_factored_oceania.vg.json"
-    vegaEmbed('#vis_map_factored_oceania', factored_map_oceania, { "actions": false }).then(function (result) {
-      // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
-    }).catch(console.error);
+    ['america', 'europe', 'africa', 'asia', 'oceania'].map(continent => {
+      var factored_map = `./js/choropleth_map_factored_${continent}.vg.json`
+      vegaEmbed(`#vis_map_factored_${continent}`, factored_map, { "actions": false }).then(function (result) {
+        // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
+      }).catch(console.error);
+    })
 
     var choropleth_map_yield_major = "./js/choropleth_map_yield_major_types.vg.json";
     vegaEmbed('#vis_map_year', choropleth_map_yield_major, { "actions": false }).then(function (result) {
