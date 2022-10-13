@@ -1,0 +1,36 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": "Production (tonnes) and yield (tonnes/ha) over time",
+  "hconcat": [
+    {
+      "data": {
+        "url": "https://raw.githubusercontent.com/LongDangHoang/fit3179/master/data/processed/production_major_categories_per_country_2000-2020.csv"
+      },
+      "mark": "area",
+      "transform": [
+        {"filter": "datum.Element == 'Production'"},
+        {"calculate": "datum.Quantity", "as": "Production (tonnes)"}
+      ],
+      "encoding": {
+        "x": {"field": "Year", "type": "quantitative"},
+        "y": {"aggregate": "sum", "field": "Production (tonnes)", "title": "Sum of production (all countries)"},
+        "color": {"field": "Item", "type": "nominal"}
+      }
+    },
+    {
+      "data": {
+        "url": "https://raw.githubusercontent.com/LongDangHoang/fit3179/master/data/processed/yield_major_categories_per_country_2000-2020.csv"
+      },
+      "mark": "line",
+      "transform": [
+        {"filter": "datum.Element == 'Yield'"},
+        {"calculate": "datum.Quantity / 10000", "as": "Yield (tonnes/ha)"}
+      ],
+      "encoding": {
+        "x": {"field": "Year", "type": "quantitative"},
+        "y": {"aggregate": "average", "field": "Yield (tonnes/ha)", "title": "Average yield (all countries)"},
+        "color": {"field": "Item", "type": "nominal"}
+      }
+    }
+  ]
+}

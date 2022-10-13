@@ -119,11 +119,8 @@
                 qui officia deserunt mollit anim id est laborum.
             </div>
         </div>
-        <div class="pure-u-1-3">
-            <div id="vis_summary_growth_1"></div>
-        </div>
-        <div class="pure-u-1-3">
-            <div id="vis_summary_growth_2"></div>
+        <div class="pure-u-2-3">
+            <div id="vis_summary_growth"></div>
         </div>
     </div>
 
@@ -146,8 +143,8 @@
     <!-- large linked map -->
     <div class="pure-g">
         <div class="pure-u-1-1">
-            <divi id="vis_map_type_linked"></div>
-        <div>
+            <div id="vis_map_type_linked"></div>
+        </div>
     </div>
 
     <!-- Further description -->
@@ -198,7 +195,7 @@
       vegaEmbed(`#vis_map_factored_${continent}`, factored_map, { "actions": false }).then(function (result) {
         // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
       }).catch(console.error);
-    })
+    });
 
     var choropleth_map_yield_major = "./js/choropleth_map_yield_major_types.vg.json";
     vegaEmbed('#vis_map_year', choropleth_map_yield_major, { "actions": false }).then(function (result) {
@@ -207,6 +204,11 @@
 
     var cereal_map_and_line = "./js/cereal_map_and_line.vg.json";
     vegaEmbed('#vis_map_type_linked', cereal_map_and_line, { "actions": false }).then(function (result) {
+      // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
+    }).catch(console.error);
+
+    var summary_growth_by_category = './js/summary_production_yield_by_major_category.vg.json';
+    vegaEmbed('#vis_summary_growth', summary_growth_by_category, { "actions": false }).then(function (result) {
       // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
     }).catch(console.error);
   </script>
