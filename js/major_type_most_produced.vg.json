@@ -1,0 +1,174 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "data": {
+      "url": "https://raw.githubusercontent.com/LongDangHoang/fit3179/master/data/processed/production_major_categories_per_country_2000-2020.csv"
+    },
+    "params": [
+      {
+        "name": "Year_Filter",
+        "value": 2020,
+        "bind": {
+          "input": "range",
+          "min": 2000,
+          "max": 2020,
+          "step": 1,
+          "name": "Year"
+        }
+      }
+    ],
+    "title": {
+      "text": "Production of foodstuff (2000-2020)",
+      "anchor": "middle"
+    },
+    "hconcat": [
+      {
+        "width": 500,
+        "height": 300,
+        "projection": {"type": "conicEqualArea", "rotate": [-150, 0, 0]},
+        "layer": [
+          {
+            "data": {
+              "url": "https://raw.githubusercontent.com/FIT3179/Vega-Lite/main/2_symbol_map/js/ne_110m_admin_0_countries.topojson",
+              "format": {
+                "type": "topojson",
+                "feature": "ne_110m_admin_0_countries"
+              }
+            },
+            "mark": {
+              "type": "geoshape",
+              "fill": "lightgray"
+            },
+            "transform": [
+              {
+                  "calculate": "'Data is not available for ' + datum.properties.NAME",
+                  "as": "note"
+              }
+            ],
+            "encoding": {
+              "tooltip": {"field": "note"}
+            }
+          },
+          {
+            "data": {
+              "url": "https://raw.githubusercontent.com/FIT3179/Vega-Lite/main/7_others/oceans.topojson",
+              "format": {"type": "topojson", "feature": "oceans"}
+            },
+            "mark": {"type": "geoshape", "fill": "lightcyan"}
+          },
+          {
+            "data": {
+              "url": "https://raw.githubusercontent.com/FIT3179/Vega-Lite/main/2_symbol_map/js/WorldMapWithGraticules.topojson",
+              "format": {
+                "type": "topojson",
+                "feature": "ne_110m_graticules_30"
+              }
+            },
+            "mark": {"type": "geoshape", "fill": null, "stroke": "lightgray"}
+          },
+          {
+            "transform": [
+              {
+                "lookup": "Area",
+                "from": {
+                    "data": {
+                    "url": "https://raw.githubusercontent.com/FIT3179/Vega-Lite/main/2_symbol_map/js/ne_110m_admin_0_countries.topojson",
+                    "format": {
+                      "type": "topojson",
+                      "feature": "ne_110m_admin_0_countries"
+                    }
+                  },
+                  "key": "properties.NAME"
+                },
+                "as": "geo"
+              },
+              {"filter": "datum.Year == Year_Filter"},
+              {"filter": "datum.Element == 'Production'"}
+            ],
+  
+            "layer": [
+              {
+                "transform": [
+                  {
+                    "joinaggregate": [{
+                      "op": "sum",
+                      "field": "Quantity", 
+                      "as": "total_quantity"
+                    }],
+                    "groupby": ["Area"]
+                  },
+                  {
+                    "calculate": "datum.Quantity / datum.total_quantity",
+                    "as": "percentage"
+                  },
+                  {
+                    "sort": [{"field": "percentage", "order": "descending"}],
+                    "window": [{"op": "rank", "as": "ranking"}],
+                    "groupby": ["Area"]
+                  },
+                  {
+                    "filter": "datum.ranking == 1"
+                  }
+                ],
+                "title": "Type of food with highest production quantity",
+                "mark": {
+                  "type": "geoshape",
+                  "stroke": "#000", 
+                  "strokeWidth": 0.5
+                }, 
+                "encoding": {
+                  "shape": {"field": "geo", "type": "geojson"},
+                  "description": {"field": "Area"},
+                  "color": {"field": "Item", "type": "nominal"},
+                  "tooltip": [
+                    {"field": "Area", "type": "nominal", "title": "Country"},
+                    {"field": "Item", "type": "nominal", "title": "Type of food with highest production"}
+                  ]
+                },
+                "params": [
+                  {
+                    "name": "country_select",
+                    "value": "Australia",
+                    "select": {"type": "point", "encodings": ["description"]}
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "width": 250,
+        "height": 280,
+        "transform": [
+          {"filter": "datum.Area == country_select.Area"}
+        ],
+        "layer": [
+          {
+            "title": {
+                "text": [
+                    "Food stuff production over time",
+                    "for selected country"
+                ]
+            },
+            "layer": [
+              {
+                "mark": "bar",
+                "encoding": {
+                  "x": {"field": "Year", "type": "quantitative"},
+                  "y": {"aggregate": "sum", "field": "Quantity", "type": "quantitative", "stack": "normalize", "title": "Proportion of product type"},
+                  "color": {
+                    "field": "Item", 
+                    "type": "nominal",
+                    "legend": {
+                      "orient": "left"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "config": {"title": {"font": "sans-serif", "fontSize": 16}}
+}

@@ -9,11 +9,11 @@
       "mark": "area",
       "transform": [
         {"filter": "datum.Element == 'Production'"},
-        {"calculate": "datum.Quantity", "as": "Production (tonnes)"}
+        {"calculate": "datum.Quantity / 1000000", "as": "Production (million tonnes)"}
       ],
       "encoding": {
         "x": {"field": "Year", "type": "quantitative"},
-        "y": {"aggregate": "sum", "field": "Production (tonnes)", "title": "Sum of production (all countries)"},
+        "y": {"aggregate": "sum", "field": "Production (million tonnes)", "title": "Total production (all countries) in million tonnes"},
         "color": {"field": "Item", "type": "nominal"}
       }
     },
@@ -21,16 +21,97 @@
       "data": {
         "url": "https://raw.githubusercontent.com/LongDangHoang/fit3179/master/data/processed/yield_major_categories_per_country_2000-2020.csv"
       },
-      "mark": "line",
       "transform": [
         {"filter": "datum.Element == 'Yield'"},
         {"calculate": "datum.Quantity / 10000", "as": "Yield (tonnes/ha)"}
       ],
-      "encoding": {
-        "x": {"field": "Year", "type": "quantitative"},
-        "y": {"aggregate": "average", "field": "Yield (tonnes/ha)", "title": "Average yield (all countries)"},
-        "color": {"field": "Item", "type": "nominal"}
-      }
+
+      "layer": [
+        {
+
+          "encoding": {
+            "x": {"field": "Year", "type": "quantitative"},
+            "y": {"aggregate": "average", "field": "Yield (tonnes/ha)", "title": "Average yield (all countries) in tonnes/ha"},
+            "color": {"field": "Item", "type": "nominal", "legend": {"orient": "left"}}
+          },
+          "layer": [
+            {
+              "mark": "line"
+            },
+            {
+              "params": [{
+                "name": "label",
+                "select": {
+                  "type": "point",
+                  "encodings": ["x"],
+                  "nearest": true,
+                  "on": "mouseover"
+                }
+              }],
+              "mark": "point",
+              "encoding": {
+                "opacity": {
+                  "condition": {
+                    "param": "label",
+                    "empty": false,
+                    "value": 1
+                  },
+                  "value": 0
+                }
+              }
+            }
+          ]
+        },
+        {
+          "transform": [
+            {"filter": "datum.Year == label.Year"}
+          ],
+          "encoding": {
+            "x": {"field": "Year", "type": "quantitative", "aggregate": "min", "title": "Year"}
+          },
+          "layer": [
+            {
+              "mark": {"type": "rule", "color": "grey"}
+            },
+            {
+              "transform": [
+                {
+                  "joinaggregate": [{
+                    "op": "mean",
+                    "field": "Yield (tonnes/ha)",
+                    "as": "average_yield"
+                  }],
+                  "groupby": ["Item"]
+                },
+                {
+                  "window": [{"op": "rank", "as": "ranking"}],
+                  "groupby": ["Item"]
+                },
+                {
+                  "filter": "datum.ranking == 1"
+                },
+                {"calculate": "format(datum.average_yield, '.3s') + ' tonnes'", "as": "text_annotation"}
+              ],
+              "encoding": {
+                "text": {"field": "text_annotation"},
+                "y": {"field": "average_yield", "type": "quantitative"},
+                "color": {"field": "Item", "type": "nominal"}
+              },
+              "layer": [
+                {
+                  "mark": {
+                    "type": "text",
+                    "strokeWidth": 2,
+                    "align": "left",
+                    "dx": 5,
+                    "dy": -5
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
   ]
 }
