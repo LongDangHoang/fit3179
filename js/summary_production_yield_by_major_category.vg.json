@@ -1,25 +1,49 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "title": "Production (tonnes) and yield (tonnes/ha) over time",
   "hconcat": [
     {
       "data": {
         "url": "https://raw.githubusercontent.com/LongDangHoang/fit3179/master/data/processed/production_major_categories_per_country_2000-2020.csv"
       },
+      "title": {
+        "text": ["Total production (million tonnes)", "of all countries"]
+      },
       "mark": "area",
+      "params": [
+        {
+          "name": "hover", 
+          "select": {
+            "type": "point", 
+            "on": "mouseover",
+            "clear": "mouseout"
+          }
+        }
+      ],
       "transform": [
         {"filter": "datum.Element == 'Production'"},
         {"calculate": "datum.Quantity / 1000000", "as": "Production (million tonnes)"}
       ],
       "encoding": {
-        "x": {"field": "Year", "type": "quantitative"},
-        "y": {"aggregate": "sum", "field": "Production (million tonnes)", "title": "Total production (all countries) in million tonnes"},
-        "color": {"field": "Item", "type": "nominal"}
+        "x": {"field": "Year", "type": "quantitative", "axis": {"format": ""}},
+        "y": {"aggregate": "sum", "field": "Production (million tonnes)", "title": "Total production (million tonnes)"},
+        "color": {"field": "Item", "type": "nominal"},
+        "tooltip": [
+          {"field": "Year", "type": "quantitative"},
+          {"field": "Item", "type": "nominal", "title": "Product Type"},
+          {"aggregate": "sum", "field": "Production (million tonnes)", "title": "Total production (million tonnes)", "type": "quantitative"}
+        ],
+        "opacity": {
+          "condition": {"param": "hover", "value": 1}, 
+          "value": 0.4
+        }
       }
     },
     {
       "data": {
         "url": "https://raw.githubusercontent.com/LongDangHoang/fit3179/master/data/processed/yield_major_categories_per_country_2000-2020.csv"
+      },
+      "title": {
+        "text": ["Average yield (tonnes/ha)", "of all countries"]
       },
       "transform": [
         {"filter": "datum.Element == 'Yield'"},
@@ -28,10 +52,9 @@
 
       "layer": [
         {
-
           "encoding": {
-            "x": {"field": "Year", "type": "quantitative"},
-            "y": {"aggregate": "average", "field": "Yield (tonnes/ha)", "title": "Average yield (all countries) in tonnes/ha"},
+            "x": {"field": "Year", "type": "quantitative", "axis": {"format": ""}},
+            "y": {"aggregate": "average", "field": "Yield (tonnes/ha)", "title": "Average yield (tonnes/ha)"},
             "color": {"field": "Item", "type": "nominal", "legend": {"orient": "left"}}
           },
           "layer": [
@@ -45,7 +68,8 @@
                   "type": "point",
                   "encodings": ["x"],
                   "nearest": true,
-                  "on": "mouseover"
+                  "on": "mouseover",
+                  "clear": "mouseout"
                 }
               }],
               "mark": "point",
@@ -71,7 +95,7 @@
           },
           "layer": [
             {
-              "mark": {"type": "rule", "color": "grey"}
+              "mark": {"type": "rule", "color": "grey"}  
             },
             {
               "transform": [
@@ -113,5 +137,12 @@
         }
       ]
     }
-  ]
+  ],
+  "config": {
+    "style": {
+      "cell": {
+        "stroke": "transparent"
+      }
+    }
+  }
 }

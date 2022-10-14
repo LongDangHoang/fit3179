@@ -2,7 +2,7 @@
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
   "width": 500,
   "height": 300,
-  "title": "Production of foodstuff (tonnes) over time",
+  "title": "Productivity measured in yield (tonnes/ha) over time",
 
   "data": {
     "url": "https://raw.githubusercontent.com/LongDangHoang/fit3179/master/data/processed/yield_major_categories_per_country_2000-2020.csv"
@@ -130,5 +130,13 @@
         ]
       }
     }
-  ]
+  ],
+
+  "config": {
+    "style": {
+      "cell": {
+        "stroke": "transparent"
+      }
+    }
+  }
 }
