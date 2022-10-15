@@ -76,8 +76,7 @@
                 "key": "properties.ISO_A2"
               },
               "as": "geo"
-            },
-            {"filter": "datum.Element == 'Production'"}
+            }
           ],
 
           "encoding": {

@@ -38,6 +38,11 @@ body *{
   .pure-g {
     display: flex;
     align-items: top;
+    margin-bottom: 50px;
+  }
+
+  .pure-g h2 {
+    margin-bottom: 0px;
   }
   
   .small-font {

@@ -1,7 +1,7 @@
 {
   "$schema": "https://vega.github.io/schema/vega/v5.json",
-  "width": 600,
-  "height": 400,
+  "width": 400,
+  "height": 300,
   "autosize": "pad",
   "title": {
     "text": "Productivity measured in yield (tonnes/ha) over time",
@@ -71,10 +71,10 @@
     { "name": "ty", "update": "height / 2" },
     {
       "name": "scale",
-      "value": 150,
+      "value": 100,
       "on": [{
         "events": {"type": "wheel", "consume": true},
-        "update": "clamp(scale * pow(1.0005, -event.deltaY * pow(16, event.deltaMode)), 150, 3000)"
+        "update": "clamp(scale * pow(1.0005, -event.deltaY * pow(16, event.deltaMode)), 100, 2000)"
       }]
     },
     {

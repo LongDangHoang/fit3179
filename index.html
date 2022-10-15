@@ -50,13 +50,13 @@
 
     <!-- preface row -->
     <div class="pure-g">
-      <div class="pure-u-1-5">
+      <div class="pure-u-2-5">
         <div class="description description-left">
           <p>
             Over the last 20 years, there has been an increase in agriculture productivity, increasing yield (defined as tonnes/ha) for many crop types across many countries.
             <br>
             <br>
-            Use the slider on the right to see how things have changed.
+            Use the slider on the right to see how things have changed. Use mouse to pan and zoom on the graph.
             <br>
             <br>
             For cereal, which includes rice, wheat, corn, productivity has increased
@@ -66,7 +66,7 @@
           </p>
         </div>
       </div>
-      <div class="pure-u-4-5">
+      <div class="pure-u-3-5">
         <!-- <div id="vis_map_year"></div> -->
         <div id="vis_map_year_roots_and_tubers" class="vis_map_year"></div>
         <div id="vis_map_year_cereals" class="vis_map_year"></div>
@@ -86,39 +86,10 @@
       </div>
     </div>
 
-    <!-- factored geometrey row-->
+    <!-- ranking plot -->
     <div class="pure-g">
       <div class="pure-u-2-5">
-        <!-- Code taken from https://www.w3schools.com/howto/howto_js_slideshow.asp with modification -->
-        <!-- Slideshow container -->
-        <div class="slideshow-container">
-
-          <!-- Full-width images with number and caption text -->
-          <div class="slideshow_viz fade">
-            <div id="vis_map_factored_america"></div>
-          </div>
-
-          <div class="slideshow_viz fade">
-            <div id="vis_map_factored_europe"></div>
-          </div>
-
-          <div class="slideshow_viz fade">
-            <div id="vis_map_factored_africa"></div>
-          </div>
-
-          <div class="slideshow_viz fade">
-            <div id="vis_map_factored_asia"></div>
-          </div>
-
-          <div class="slideshow_viz fade">
-            <div id="vis_map_factored_oceania"></div>
-          </div>
-
-          <!-- Next and previous buttons -->
-          <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
-          <a class="next" onclick="plusSlides(1)">&#10095;</a>
-        </div>
-        <br>
+        <div id="vis_productivity_growth_by_continent"></div>
       </div>
       <div class="pure-u-3-5">
         <div class="description description-right">
@@ -239,7 +210,7 @@
     let selector = document.getElementById("Product_Type_first_map");
     selector.onchange = () => {
       let value = selector.children[selector.selectedIndex].value;
-      value = value.split(",")[0].toLowerCase().replace(" ", "_");
+      value = value.split(",")[0].toLowerCase().replaceAll(" ", "_");
 
       let maps = document.getElementsByClassName("vis_map_year");
       for (i=0; i < maps.length; i++) {
@@ -273,15 +244,15 @@
     //   // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
     // }).catch(console.error);
 
-    var major_type_most_produced = "./js/major_type_most_produced.vg.json";
-    vegaEmbed('#vis_map_type_linked', major_type_most_produced, { "actions": false }).then(function (result) {
-      // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
-    }).catch(console.error);
+    // var major_type_most_produced = "./js/major_type_most_produced.vg.json";
+    // vegaEmbed('#vis_map_type_linked', major_type_most_produced, { "actions": false }).then(function (result) {
+    //   // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
+    // }).catch(console.error);
 
-    var summary_growth_by_category = './js/summary_production_yield_by_major_category.vg.json';
-    vegaEmbed('#vis_summary_growth', summary_growth_by_category, { "actions": false }).then(function (result) {
-      // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
-    }).catch(console.error);
+    // var summary_growth_by_category = './js/summary_production_yield_by_major_category.vg.json';
+    // vegaEmbed('#vis_summary_growth', summary_growth_by_category, { "actions": false }).then(function (result) {
+    //   // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
+    // }).catch(console.error);
   </script>
 
 

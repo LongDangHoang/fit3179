@@ -8,7 +8,6 @@
       {
         "transform": [
           {"calculate": "datum.Item == 'Meat, Total'", "as": "is_meat"},
-          {"filter": "datum.Element == 'Production'"},
           {
             "window": [{"op": "lead", "field": "Quantity", "as": "lead_Quantity"}],
             "sort": [{"field": "Year", "order": "ascending"}],

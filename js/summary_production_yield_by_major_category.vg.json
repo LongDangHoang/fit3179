@@ -20,7 +20,6 @@
         }
       ],
       "transform": [
-        {"filter": "datum.Element == 'Production'"},
         {"calculate": "datum.Quantity / 1000000", "as": "Production (million tonnes)"}
       ],
       "encoding": {
@@ -46,7 +45,6 @@
         "text": ["Average yield (tonnes/ha)", "of all countries"]
       },
       "transform": [
-        {"filter": "datum.Element == 'Yield'"},
         {"calculate": "datum.Quantity / 10000", "as": "Yield (tonnes/ha)"}
       ],
 
