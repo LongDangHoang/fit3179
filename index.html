@@ -67,9 +67,9 @@
         </div>
       </div>
       <div class="pure-u-4-5">
-        <div id="vis_map_year"></div>
-        <!-- <div id="vis_map_year_cereals" class="vis_map_year"></div> -->
-        <!-- <div id="vis_map_year_roots_and_tubers" class="vis_map_year"></div>
+        <!-- <div id="vis_map_year"></div> -->
+        <div id="vis_map_year_roots_and_tubers" class="vis_map_year"></div>
+        <div id="vis_map_year_cereals" class="vis_map_year"></div>
         <div id="vis_map_year_citrus_fruit" class="vis_map_year"></div>
         <div id="vis_map_year_pulses" class="vis_map_year"></div>
         <div id="vis_map_year_treenuts" class="vis_map_year"></div>
@@ -83,7 +83,7 @@
             <option value="Treenuts, Total">Treenuts</option>
           </select>
         </label>
-      </div> -->
+      </div>
     </div>
 
     <!-- factored geometrey row-->
@@ -226,54 +226,52 @@
   </div> <!-- end page -->
 
   <!-- "filter" by product type -->
-  <!-- <script type="text/javascript">
+  <script type="text/javascript">
     let maps = document.getElementsByClassName("vis_map_year");
     for (i=0; i < maps.length; i++) {
       let map = maps[i];
       if (map.id == "vis_map_year_cereals") {
-        map.setAttribute("hidden", false);
-        console.log("Setting cereals to not hidden");
+        map.removeAttribute("hidden");
       } else
-        maps[i].setAttribute("hidden", true);
+        maps[i].setAttribute("hidden", "");
     }
 
     let selector = document.getElementById("Product_Type_first_map");
-    selector.addEventListener("onchange", () => {
-      let value = this.children[this.selectedIndex].value;
-      value = value.split(",")[0].lower().replace(" ", "_");
+    selector.onchange = () => {
+      let value = selector.children[selector.selectedIndex].value;
+      value = value.split(",")[0].toLowerCase().replace(" ", "_");
 
       let maps = document.getElementsByClassName("vis_map_year");
       for (i=0; i < maps.length; i++) {
         let map = maps[i];
-        if (map.id == ("vis_map_year_" + value))
-          map.setAttribute("hidden", false);
+        if (map.id == ("vis_map_year_" + value)) {
+          map.removeAttribute("hidden");
+        }
         else
-          maps[i].setAttribute("hidden", true);
+          maps[i].setAttribute("hidden", "");
       }
-      document.getElementById()
-    });
-  </script> -->
+    };
+  </script>
 
   <script type="text/javascript">
-
-    ['america', 'europe', 'africa', 'asia', 'oceania'].map(continent => {
-      var factored_map = `./js/choropleth_map_factored_${continent}.vg.json`
-      vegaEmbed(`#vis_map_factored_${continent}`, factored_map, { "actions": false }).then(function (result) {
-        // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
-      }).catch(console.error);
-    });
-
-    // ['cereals', 'citrus_fruit', 'pulses', 'roots_and_tubers', 'treenuts'].map(type => {
-    //   var map = `./js/choropleth_by_type/zoomable_map_yield_major_types_${type}.vg.json`;
-    //   vegaEmbed(`#vis_map_year_${type}`, map, { "actions": false }).then(function (result) {
+    // ['america', 'europe', 'africa', 'asia', 'oceania'].map(continent => {
+    //   var factored_map = `./js/choropleth_map_factored_${continent}.vg.json`
+    //   vegaEmbed(`#vis_map_factored_${continent}`, factored_map, { "actions": false }).then(function (result) {
     //     // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
     //   }).catch(console.error);
     // });
 
-    var choropleth_by_type = './js/zoomable_map_yield_major_types.vg.json';
-    vegaEmbed(`#vis_map_year`, map, { "actions": false }).then(function (result) {
-      // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
-    }).catch(console.error);
+    ['cereals', 'citrus_fruit', 'pulses', 'roots_and_tubers', 'treenuts'].map(type => {
+      var map = `./js/choropleth_by_type/zoomable_map_yield_major_types_${type}.vg.json`;
+      vegaEmbed(`#vis_map_year_${type}`, map, { "actions": false }).then(function (result) {
+        // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
+      }).catch(console.error);
+    });
+
+    // var choropleth_by_type = './js/zoomable_map_yield_major_types.vg.json';
+    // vegaEmbed(`#vis_map_year`, map, { "actions": false }).then(function (result) {
+    //   // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
+    // }).catch(console.error);
 
     var major_type_most_produced = "./js/major_type_most_produced.vg.json";
     vegaEmbed('#vis_map_type_linked', major_type_most_produced, { "actions": false }).then(function (result) {
