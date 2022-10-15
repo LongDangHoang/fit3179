@@ -81,10 +81,10 @@
 
           "encoding": {
             "color": {
-              "field": "Item",
+              "field": "Item Hierarchy Type",
               "type": "nominal",
               "scale": {
-                "domain": ["Cereals, Total", "Citrus Fruit, Total", "Meat, Total", "Milk, Total", "Pulses, Total", "Roots and Tubers, Total", "Treenuts, Total"]
+                "domain": ["Cereals", "Fruits and nuts", "Vegetables", "Meat and meat products", "Dairy and egg"]
               }
             }
           },
@@ -102,7 +102,7 @@
                   "groupby": ["Area"]
                 },
                 {
-                  "calculate": "datum.Quantity / datum.total_quantity",
+                  "calculate": "datum.Quantity / datum.total_quantity * 100",
                   "as": "percentage"
                 },
                 {
@@ -142,7 +142,9 @@
                 },
                 "tooltip": [
                   {"field": "Area", "type": "nominal", "title": "Country"},
-                  {"field": "Item", "type": "nominal", "title": "Type of food with highest production"}
+                  {"field": "Item Hierarchy Type", "type": "nominal", "title": "Type of food with highest production"},
+                  {"field": "total_quantity", "type": "quantitative", "title": "Total foodstuff production (all types in tonnes)", "format": ","},
+                  {"field": "percentage", "type": "quantitative", "title": "Percentage (%) of total production for most produced food type", "format": ".3f"}
                 ]
               }
             }
@@ -156,31 +158,48 @@
       "transform": [
         {"filter": "datum.Area == country_select.Area"}
       ],
+      "title": {
+          "text": [
+              "Food stuff production over time",
+              "for selected country"
+          ]
+      },
       "layer": [
         {
-          "title": {
-              "text": [
-                  "Food stuff production over time",
-                  "for selected country"
-              ]
-          },
-          "layer": [
+          "mark": "area",
+          "transform": [
             {
-              "mark": "area",
-              "encoding": {
-                "x": {"field": "Year", "type": "quantitative", "axis": {"format": ""}},
-                "y": {"aggregate": "sum", "field": "Quantity", "type": "quantitative", "stack": "normalize", "title": "Proportion of product type"},
-                "color": {
-                  "field": "Item", 
-                  "type": "nominal",
-                  "legend": {
-                    "orient": "left",
-                    "symbolStrokeWidth": 0 
-                  }
+              "joinaggregate": [
+                {
+                  "op": "sum",
+                  "field": "Quantity",
+                  "as": "total_quantity"
                 }
-              }
+              ],
+              "groupby": ["Year"]
+            },
+            {
+              "calculate": "datum.Quantity / datum.total_quantity * 100",
+              "as": "proportion"
             }
-          ]
+          ],
+          "encoding": {
+            "x": {"field": "Year", "type": "quantitative", "axis": {"format": "", "grid": false}},
+            "y": {"field": "proportion", "type": "quantitative", "stack": "zero", "title": "Proportion of product type"},
+            "color": {
+              "field": "Item Hierarchy Type", 
+              "type": "nominal",
+              "legend": {
+                "orient": "left",
+                "symbolStrokeWidth": 0 
+              }
+            },
+            "tooltip": [
+              {"field": "Year"},
+              {"field": "Item Hierarchy Type", "title": "Product type"},
+              {"field": "proportion", "type": "quantitative", "title": "Proportion of product type (%)", "format": ".3f"}
+            ]
+          }
         }
       ]
     }

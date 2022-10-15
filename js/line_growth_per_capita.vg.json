@@ -1,0 +1,229 @@
+{
+  "$schema": "https://vega.github.io/schema/vega/v5.json",
+  "description": "Plot showing average data with raw values in the background.",
+  "background": "white",
+  "padding": 5,
+  "width": 200,
+  "height": 200,
+  "style": "cell",
+  "data": [
+    {
+      "name": "source_0",
+      "url": "https://raw.githubusercontent.com/LongDangHoang/fit3179/master/data/processed/production_major_categories_per_country_2000-2020.csv",
+      "format": {"type": "csv", "parse": {"Year": "number"}, "delimiter": ","},
+      "transform": [
+        {"type": "filter", "expr": "datum['Item Hierarchy Type'] === Product"},
+        {
+          "type": "filter",
+          "expr": "Continent === 'Show all' || datum.Continent === Continent"
+        }
+      ]
+    },
+    {
+      "name": "data_0",
+      "source": "source_0",
+      "transform": [
+        {
+          "type": "filter",
+          "expr": "datum.Quantity > 0 && datum.Population > 1000000"
+        },
+        {
+          "type": "formula",
+          "expr": "datum.Quantity / datum.Population",
+          "as": "quantity_per_capita"
+        },
+        {
+          "type": "filter",
+          "expr": "isValid(datum[\"Year\"]) && isFinite(+datum[\"Year\"]) && isValid(datum[\"quantity_per_capita\"]) && isFinite(+datum[\"quantity_per_capita\"])"
+        }
+      ]
+    },
+    {
+      "name": "data_1",
+      "source": "source_0",
+      "transform": [
+        {
+          "type": "aggregate",
+          "groupby": ["Year"],
+          "ops": ["sum", "sum"],
+          "fields": ["Population", "Quantity"],
+          "as": ["total_pop", "total_pro"]
+        },
+        {
+          "type": "formula",
+          "expr": "datum.total_pro / datum.total_pop",
+          "as": "total_prod_per_capita"
+        }
+      ]
+    }
+  ],
+  "signals": [
+    {
+      "name": "Product",
+      "value": "Cereals",
+      "bind": {
+        "input": "select",
+        "options": [
+          "Cereals",
+          "Vegetables",
+          "Dairy and egg",
+          "Meat and meat products",
+          "Fruits and nuts"
+        ],
+        "name": "Product Selection: "
+      }
+    },
+    {
+      "name": "Continent",
+      "value": "Show all",
+      "bind": {
+        "input": "select",
+        "options": [
+          "Show all",
+          "Americas",
+          "Europe",
+          "Asia",
+          "Africa",
+          "Oceania"
+        ],
+        "name": "Continent Selection: "
+      }
+    }
+  ],
+  "marks": [
+    {
+      "name": "layer_0_marks",
+      "type": "symbol",
+      "style": ["point"],
+      "from": {"data": "data_0"},
+      "encode": {
+        "update": {
+          "opacity": {"value": 0.1},
+          "fill": {"value": "transparent"},
+          "stroke": {"value": "#4c78a8"},
+          "ariaRoleDescription": {"value": "point"},
+          "description": {
+            "signal": "\"Year: \" + (format(datum[\"Year\"], \"\")) + \"; Production per capita (tonnes/person): \" + (format(datum[\"quantity_per_capita\"], \"\"))"
+          },
+          "x": {"scale": "x", "field": "Year"},
+          "y": {"scale": "y", "field": "quantity_per_capita"}
+        }
+      }
+    },
+    {
+      "name": "layer_1_marks",
+      "type": "line",
+      "style": ["line"],
+      "sort": {"field": "datum[\"Year\"]"},
+      "from": {"data": "data_1"},
+      "encode": {
+        "update": {
+          "stroke": {"value": "red"},
+          "strokeWidth": {"value": 5},
+          "tooltip": {
+            "signal": "{\"Year\": isValid(datum[\"Year\"]) ? datum[\"Year\"] : \"\"+datum[\"Year\"], \"Global production per capita (tonnes/person)\": format(datum[\"total_prod_per_capita\"], \".3f\")}"
+          },
+          "description": {
+            "signal": "\"Year: \" + (format(datum[\"Year\"], \"\")) + \"; total_prod_per_capita: \" + (format(datum[\"total_prod_per_capita\"], \"\")) + \"; Global production per capita (tonnes/person): \" + (format(datum[\"total_prod_per_capita\"], \".3f\"))"
+          },
+          "x": {"scale": "x", "field": "Year"},
+          "y": {"scale": "y", "field": "total_prod_per_capita"},
+          "defined": {
+            "signal": "isValid(datum[\"Year\"]) && isFinite(+datum[\"Year\"]) && isValid(datum[\"total_prod_per_capita\"]) && isFinite(+datum[\"total_prod_per_capita\"])"
+          }
+        }
+      }
+    }
+  ],
+  "scales": [
+    {
+      "name": "x",
+      "type": "linear",
+      "domain": [2000, 2020],
+      "range": [0, {"signal": "width"}],
+      "zero": false
+    },
+    {
+      "name": "y",
+      "type": "linear",
+      "domain": {
+        "fields": [
+          {"data": "data_0", "field": "quantity_per_capita"},
+          {"data": "data_1", "field": "total_prod_per_capita"}
+        ]
+      },
+      "range": [{"signal": "height"}, 0],
+      "nice": true,
+      "zero": true
+    },
+    {
+      "name": "legend",
+      "type": "ordinal",
+      "domain": [
+        "Global",
+        "Individual country"
+      ],
+      "range": ["red", "blue"]
+    }
+  ],
+  "axes": [
+    {
+      "scale": "x",
+      "orient": "bottom",
+      "gridScale": "y",
+      "grid": true,
+      "tickCount": {"signal": "ceil(width/40)"},
+      "domain": false,
+      "labels": false,
+      "aria": false,
+      "maxExtent": 0,
+      "minExtent": 0,
+      "ticks": false,
+      "zindex": 0
+    },
+    {
+      "scale": "y",
+      "orient": "left",
+      "gridScale": "x",
+      "grid": true,
+      "tickCount": {"signal": "ceil(height/40)"},
+      "domain": false,
+      "labels": false,
+      "aria": false,
+      "maxExtent": 0,
+      "minExtent": 0,
+      "ticks": false,
+      "zindex": 0
+    },
+    {
+      "scale": "x",
+      "orient": "bottom",
+      "grid": false,
+      "title": "Year",
+      "format": "",
+      "labelFlush": true,
+      "labelOverlap": true,
+      "tickCount": {"signal": "ceil(width/40)"},
+      "zindex": 0
+    },
+    {
+      "scale": "y",
+      "orient": "left",
+      "grid": false,
+      "title": "Production per capita (tonnes/person)",
+      "labelOverlap": true,
+      "tickCount": {"signal": "ceil(height/40)"},
+      "zindex": 0
+    }
+  ],
+  "legends": [
+    {
+    "fill": "legend",
+    "symbolType": "circle",
+    "symbolStrokeWidth": 0,
+    "format": "",
+    "title": ["Production per capita", "(tonnes/person)"],
+    "encode": {"symbols": {"update": {"stroke": {"value": "lightgrey"}}}}
+    }
+  ]
+}

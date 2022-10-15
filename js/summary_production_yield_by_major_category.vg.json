@@ -25,10 +25,10 @@
       "encoding": {
         "x": {"field": "Year", "type": "quantitative", "axis": {"format": ""}},
         "y": {"aggregate": "sum", "field": "Production (million tonnes)", "title": "Total production (million tonnes)"},
-        "color": {"field": "Item", "type": "nominal"},
+        "color": {"field": "Item Hierarchy Type", "type": "nominal"},
         "tooltip": [
           {"field": "Year", "type": "quantitative"},
-          {"field": "Item", "type": "nominal", "title": "Product Type"},
+          {"field": "Item Hierarchy Type", "type": "nominal", "title": "Product Type"},
           {"aggregate": "sum", "field": "Production (million tonnes)", "title": "Total production (million tonnes)", "type": "quantitative"}
         ],
         "opacity": {
@@ -42,18 +42,18 @@
         "url": "https://raw.githubusercontent.com/LongDangHoang/fit3179/master/data/processed/yield_major_categories_per_country_2000-2020.csv"
       },
       "title": {
-        "text": ["Average yield (tonnes/ha)", "of all countries"]
+        "text": ["Average yield (tonnes/producing unit)", "of all countries"]
       },
       "transform": [
-        {"calculate": "datum.Quantity / 10000", "as": "Yield (tonnes/ha)"}
+        {"calculate": "datum.Quantity / 10000", "as": "Yield (tonnes/producing unit)"}
       ],
 
       "layer": [
         {
           "encoding": {
             "x": {"field": "Year", "type": "quantitative", "axis": {"format": ""}},
-            "y": {"aggregate": "average", "field": "Yield (tonnes/ha)", "title": "Average yield (tonnes/ha)"},
-            "color": {"field": "Item", "type": "nominal", "legend": {"orient": "left"}}
+            "y": {"aggregate": "average", "field": "Yield (tonnes/producing unit)", "title": "Average yield (tonnes/producing unit)"},
+            "color": {"field": "Item Hierarchy Type", "type": "nominal", "legend": {"orient": "right"}}
           },
           "layer": [
             {
@@ -100,24 +100,24 @@
                 {
                   "joinaggregate": [{
                     "op": "mean",
-                    "field": "Yield (tonnes/ha)",
+                    "field": "Yield (tonnes/producing unit)",
                     "as": "average_yield"
                   }],
-                  "groupby": ["Item"]
+                  "groupby": ["Item Hierarchy Type"]
                 },
                 {
                   "window": [{"op": "rank", "as": "ranking"}],
-                  "groupby": ["Item"]
+                  "groupby": ["Item Hierarchy Type"]
                 },
                 {
                   "filter": "datum.ranking == 1"
                 },
-                {"calculate": "format(datum.average_yield, '.3s') + ' tonnes'", "as": "text_annotation"}
+                {"calculate": "format(datum.average_yield, '.3s') + ' tonnes/producing unit'", "as": "text_annotation"}
               ],
               "encoding": {
                 "text": {"field": "text_annotation"},
                 "y": {"field": "average_yield", "type": "quantitative"},
-                "color": {"field": "Item", "type": "nominal"}
+                "color": {"field": "Item Hierarchy Type", "type": "nominal"}
               },
               "layer": [
                 {

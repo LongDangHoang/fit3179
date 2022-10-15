@@ -68,19 +68,19 @@
       </div>
       <div class="pure-u-3-5">
         <!-- <div id="vis_map_year"></div> -->
-        <div id="vis_map_year_roots_and_tubers" class="vis_map_year"></div>
         <div id="vis_map_year_cereals" class="vis_map_year"></div>
-        <div id="vis_map_year_citrus_fruit" class="vis_map_year"></div>
-        <div id="vis_map_year_pulses" class="vis_map_year"></div>
-        <div id="vis_map_year_treenuts" class="vis_map_year"></div>
+        <div id="vis_map_year_fruits_and_nuts" class="vis_map_year"></div>
+        <div id="vis_map_year_vegetables" class="vis_map_year"></div>
+        <div id="vis_map_year_meat" class="vis_map_year"></div>
+        <div id="vis_map_year_dairy_and_egg" class="vis_map_year"></div>
         <label>
           <span>Product Selection: </span>
           <select name="Product_Type" id="Product_Type_first_map" onfocus="this.selectedIndex = -1;">
-            <option value="Cereals, Total" selected="true">Cereals</option>
-            <option value="Citrus Fruit, Total">Citrus Fruit</option>
-            <option value="Pulses, Total">Pulses</option>
-            <option value="Roots and Tubers, Total">Roots and Tubers</option>
-            <option value="Treenuts, Total">Treenuts</option>
+            <option value="Cereals" selected="true">Cereals</option>
+            <option value="Fruits and nuts">Fruits and nuts</option>
+            <option value="Vegetables">Vegetables</option>
+            <option value="Dairy and egg">Dairy and egg</option>
+            <option value="Meat">Meat</option>
           </select>
         </label>
       </div>
@@ -89,18 +89,17 @@
     <!-- ranking plot -->
     <div class="pure-g">
       <div class="pure-u-2-5">
-        <div id="vis_productivity_growth_by_continent"></div>
+        <div id="vis_per_capita"></div>
       </div>
       <div class="pure-u-3-5">
         <div class="description description-right">
-            For each continent, the last 20 years have seen different changes to agriculture production and productivity.
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-            tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim 
-            veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
-            ea commodo consequat. Duis aute irure dolor in reprehenderit in 
-            voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
-            Excepteur sint occaecat cupidatat non proident, sunt in culpa 
-            qui officia deserunt mollit anim id est laborum.
+            However, this change has just kept up with population growth. For most crops,
+            the amount of food produced per capita has stayed largely the same.
+            On one hand, as production of fish and other vegetables which are not included in this dataset have also increased,
+            the net amount of food and the diversity of food for the world has increased.
+            On the other hand, many countries still have very low production of food per capita, 
+            rich yet heavy net food importer countries notwithstanding. This means the road
+            to a world without hunger remains far.
         </div>
       </div>
     </div>
@@ -109,13 +108,9 @@
     <div class="pure-g">
         <div class="pure-u-1-3">
             <div class="description description-left">
-                Overall, growth in productivity and production quality may not be too surprising, but it should be apprecitated the amount of work and innovation required to constantly improve and feed the world's populataion
-                consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim 
-                veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
-                ea commodo consequat. Duis aute irure dolor in reprehenderit in 
-                voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
-                Excepteur sint occaecat cupidatat non proident, sunt in culpa 
-                qui officia deserunt mollit anim id est laborum.
+                Overall, growth in productivity and production quality may not be too surprising,
+                but it should be apprecitated the amount of work and innovation required to
+                constantly improve and feed the world's populataion
             </div>
         </div>
         <div class="pure-u-2-3">
@@ -225,34 +220,25 @@
   </script>
 
   <script type="text/javascript">
-    // ['america', 'europe', 'africa', 'asia', 'oceania'].map(continent => {
-    //   var factored_map = `./js/choropleth_map_factored_${continent}.vg.json`
-    //   vegaEmbed(`#vis_map_factored_${continent}`, factored_map, { "actions": false }).then(function (result) {
-    //     // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
-    //   }).catch(console.error);
-    // });
-
-    ['cereals', 'citrus_fruit', 'pulses', 'roots_and_tubers', 'treenuts'].map(type => {
+    ['cereals', 'vegetables', 'dairy_and_egg', 'meat', 'fruits_and_nuts'].map(type => {
       var map = `./js/choropleth_by_type/zoomable_map_yield_major_types_${type}.vg.json`;
       vegaEmbed(`#vis_map_year_${type}`, map, { "actions": false }).then(function (result) {
         // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
       }).catch(console.error);
     });
 
-    // var choropleth_by_type = './js/zoomable_map_yield_major_types.vg.json';
-    // vegaEmbed(`#vis_map_year`, map, { "actions": false }).then(function (result) {
-    //   // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
-    // }).catch(console.error);
+    var growth_per_capita = './js/line_growth_per_capita.vg.json';
+    vegaEmbed('#vis_per_capita', growth_per_capita, { "actions": false }).then(function (result) {}).catch(console.error)
 
-    // var major_type_most_produced = "./js/major_type_most_produced.vg.json";
-    // vegaEmbed('#vis_map_type_linked', major_type_most_produced, { "actions": false }).then(function (result) {
-    //   // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
-    // }).catch(console.error);
+    var major_type_most_produced = "./js/major_type_most_produced.vg.json";
+    vegaEmbed('#vis_map_type_linked', major_type_most_produced, { "actions": false }).then(function (result) {
+      // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
+    }).catch(console.error);
 
-    // var summary_growth_by_category = './js/summary_production_yield_by_major_category.vg.json';
-    // vegaEmbed('#vis_summary_growth', summary_growth_by_category, { "actions": false }).then(function (result) {
-    //   // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
-    // }).catch(console.error);
+    var summary_growth_by_category = './js/summary_production_yield_by_major_category.vg.json';
+    vegaEmbed('#vis_summary_growth', summary_growth_by_category, { "actions": false }).then(function (result) {
+      // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
+    }).catch(console.error);
   </script>
 
 

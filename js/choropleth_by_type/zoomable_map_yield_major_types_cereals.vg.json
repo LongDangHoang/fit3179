@@ -44,7 +44,8 @@
           "fields": ["ISO-A2"],
           "as": ["geo"]
         },
-        {"type": "filter", "expr": "datum.Item == 'Cereals, Total'"},
+        {"type": "filter", "expr": "datum['Item Hierarchy Type'] == 'Cereals'"},
+        {"type": "filter", "expr": "datum['Unit'] == 'hg/ha'"},
         {"type": "filter", "expr": "datum.Year == Year_Filter"},
         {
           "type": "formula",
