@@ -73,7 +73,7 @@
       {
         "transform": [
           {
-            "lookup": "Area",
+            "lookup": "ISO-A2",
             "from": {
               "data": {
                 "url": "https://raw.githubusercontent.com/LongDangHoang/fit3179/master/data/europe_geo.json",

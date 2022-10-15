@@ -1,0 +1,38 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "data": {
+      "url": "https://raw.githubusercontent.com/LongDangHoang/fit3179/master/data/processed/production_major_categories_per_country_2000-2020.csv"
+    },
+
+    "layer": [
+      {
+        "transform": [
+          {"calculate": "datum.Item == 'Meat, Total'", "as": "is_meat"},
+          {"filter": "datum.Element == 'Production'"},
+          {
+            "window": [{"op": "lead", "field": "Quantity", "as": "lead_Quantity"}],
+            "sort": [{"field": "Year", "order": "ascending"}],
+            "groupby": ["Area", "Item"]
+          },
+          {"calculate": "(datum.lead_Quantity - datum.Quantity)/datum.Quantity * 100", "as": "percent_growth"},
+          {"filter": {"field": "percent_growth", "valid": true}}
+        ],
+        "mark": "line",
+        "encoding": {
+          "x": {"field": "Year", "type": "quantitative", "axis": {"format": ""}},
+          // "y": {"aggregate": "average", "field": "percent_growth", "type": "quantitative"},
+          // "color": {"field": "is_meat", "type": "nominal"},
+          // "detail": {"field": "Area", "type": "nominal"}
+        }
+      }
+    ],
+
+    "config": {
+      "title": {"font": "sans-serif", "fontSize": 16},
+      "style": {
+        "cell": {
+          "stroke": "transparent"
+        }
+      }
+    }
+}

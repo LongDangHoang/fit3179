@@ -36,10 +36,6 @@ body *{
   }
   
   .pure-g {
-	  margin-bottom: 40px;
-  }
-
-  .pure-g {
     display: flex;
     align-items: top;
   }

@@ -64,7 +64,7 @@
         {
           "transform": [
             {
-              "lookup": "Area",
+              "lookup": "ISO-A2",
               "from": {
                   "data": {
                   "url": "https://raw.githubusercontent.com/FIT3179/Vega-Lite/main/2_symbol_map/js/ne_110m_admin_0_countries.topojson",
@@ -73,7 +73,7 @@
                     "feature": "ne_110m_admin_0_countries"
                   }
                 },
-                "key": "properties.NAME"
+                "key": "properties.ISO_A2"
               },
               "as": "geo"
             },
@@ -167,9 +167,9 @@
           },
           "layer": [
             {
-              "mark": "bar",
+              "mark": "area",
               "encoding": {
-                "x": {"field": "Year", "type": "quantitative"},
+                "x": {"field": "Year", "type": "quantitative", "axis": {"format": ""}},
                 "y": {"aggregate": "sum", "field": "Quantity", "type": "quantitative", "stack": "normalize", "title": "Proportion of product type"},
                 "color": {
                   "field": "Item", 
