@@ -140,6 +140,13 @@
                   },
                   "value": 0.4
                 },
+                "stroke": {
+                  "condition": {
+                    "test": "datum.Area == country_select.Area",
+                    "value": "red"
+                  },
+                  "value": "black"
+                },
                 "tooltip": [
                   {"field": "Area", "type": "nominal", "title": "Country"},
                   {"field": "Item Hierarchy Type", "type": "nominal", "title": "Type of food with highest production"},
@@ -185,7 +192,7 @@
           ],
           "encoding": {
             "x": {"field": "Year", "type": "quantitative", "axis": {"format": "", "grid": false}},
-            "y": {"field": "proportion", "type": "quantitative", "stack": "zero", "title": "Proportion of product type"},
+            "y": {"aggregate": "sum", "field": "Quantity", "type": "quantitative", "title": "Proportion of product type", "stack": "normalize"},
             "color": {
               "field": "Item Hierarchy Type", 
               "type": "nominal",
