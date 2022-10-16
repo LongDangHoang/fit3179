@@ -50,7 +50,7 @@
 
     <!-- preface row -->
     <div class="pure-g">
-      <div class="pure-u-2-5">
+      <div class="pure-u-1-3">
         <div class="description description-left">
           <p>
             Over the last 20 years, there has been an increase in agriculture productivity, increasing yield (defined as tonnes/ha) for many crop types across many countries.
@@ -66,13 +66,14 @@
           </p>
         </div>
       </div>
-      <div class="pure-u-3-5">
+      <div class="pure-u-2-3">
         <!-- <div id="vis_map_year"></div> -->
         <div id="vis_map_year_cereals" class="vis_map_year"></div>
         <div id="vis_map_year_fruits_and_nuts" class="vis_map_year"></div>
         <div id="vis_map_year_vegetables" class="vis_map_year"></div>
         <div id="vis_map_year_meat" class="vis_map_year"></div>
         <div id="vis_map_year_dairy_and_egg" class="vis_map_year"></div>
+        <br>
         <label>
           <span>Product Selection: </span>
           <select name="Product_Type" id="Product_Type_first_map" onfocus="this.selectedIndex = -1;">
@@ -88,11 +89,8 @@
 
     <!-- ranking plot -->
     <div class="pure-g">
-      <div class="pure-u-2-5">
-        <div id="vis_per_capita"></div>
-      </div>
-      <div class="pure-u-3-5">
-        <div class="description description-right">
+      <div class="pure-u-1-3">
+        <div class="description description-left">
             However, this change has just kept up with population growth. For most crops,
             the amount of food produced per capita has stayed largely the same.
             On one hand, as production of fish and other vegetables which are not included in this dataset have also increased,
@@ -101,6 +99,9 @@
             rich yet heavy net food importer countries notwithstanding. This means the road
             to a world without hunger remains far.
         </div>
+      </div>
+      <div class="pure-u-2-3">
+        <div id="vis_per_capita"></div>
       </div>
     </div>
 

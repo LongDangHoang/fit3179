@@ -1,0 +1,136 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Plot showing average data with raw values in the background.",
+  "width": 500,
+  "height": 200,
+
+  "data": {
+    "url": "https://raw.githubusercontent.com/LongDangHoang/fit3179/master/data/processed/production_major_categories_per_country_2000-2020.csv"
+  },
+  
+  "params": [
+    {
+      "name": "Product",
+      "value": "Cereals",
+      "bind": {
+        "input": "select",
+        "options": [
+          "Cereals",
+          "Vegetables",
+          "Dairy and egg",
+          "Meat and meat products",
+          "Fruits and nuts"
+        ],
+        "name": "Product: "
+      }
+    },
+    {
+      "name": "Continent",
+      "value": "Show all",
+      "bind": {
+        "input": "select",
+        "options": [
+          "Show all",
+          "Americas",
+          "Europe",
+          "Asia",
+          "Africa",
+          "Oceania"
+        ],
+        "name": "Continent: "
+      }
+    }
+  ],
+
+  "transform": [
+    {"filter": "datum['Item Hierarchy Type'] === Product"},
+    {"filter": "Continent === 'Show all' || datum.Continent === Continent"}
+  ],
+
+  "hconcat": [
+    {
+      "layer": [
+        {
+          "title": "Production per capita over time",
+          "transform": [
+            {"filter": "datum.Quantity > 0 && datum.Population > 1000000"},
+            {
+              "calculate": "datum.Quantity / datum.Population",
+              "as": "quantity_per_capita"
+            },
+            {"filter": "isValid(datum[\"Year\"]) && isFinite(+datum[\"Year\"]) && isValid(datum[\"quantity_per_capita\"]) && isFinite(+datum[\"quantity_per_capita\"])"}
+          ],
+          "mark": "point",
+          "encoding": {
+            "x": {"field": "Year", "type": "quantitative", "axis": {"format": ""}, "scale": {"domain": {"param": "time_brush"}}},
+            "y": {"field": "quantity_per_capita", "type": "quantitative", "title": "Production per capita (tonnes/person)"},
+            "detail": {"field": "Area", "type": "nominal"},
+            "opactiy": {"value": 0.1}
+          }
+        }, 
+        {
+          "transform": [
+            {
+              "aggregate": [
+                {"field": "Population", "op": "sum", "as": "total_pop"},
+                {"field": "Quantity", "op": "sum", "as": "total_pro"}
+              ],
+              "groupby": ["Year"]
+            },
+            {
+              "calculate": "datum.total_pro / datum.total_pop",
+              "as": "total_prod_per_capita"
+            }
+          ],
+          "mark": "line",
+          "encoding": {
+            "x": {"field": "Year", "type": "quantitative", "axis": {"format": ""}, "scale": {"domain": {"param": "time_brush"}}},
+            "y": {"field": "total_prod_per_capita", "type": "quantitative", "title": "Production per capita (tonnes/person)"},
+            "color": {"value": "red"},
+            "strokeWidth": {"value": 5},
+            "tooltip": [
+              {"field": "Year"},
+              {"field": "total_prod_per_capita", "type": "quantitative", "title": "Global production per capita (tonnes/person)", "format": ".3f"}
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "Drag here to filter the right plot",
+      "transform": [
+        {
+          "aggregate": [
+            {"field": "Population", "op": "sum", "as": "total_pop"},
+            {"field": "Quantity", "op": "sum", "as": "total_pro"}
+          ],
+          "groupby": ["Year"]
+        },
+        {
+          "calculate": "datum.total_pro / datum.total_pop",
+          "as": "total_prod_per_capita"
+        }
+      ],
+      "mark": "line",
+      "params": [
+        {
+          "name": "time_brush",
+          "select": {
+            "type": "interval",
+            "encodings": ["x"]
+          }
+        }
+      ],
+      "encoding": {
+        "x": {"field": "Year", "type": "quantitative", "axis": {"format": ""}, "scale": {"domain": [2000, 2020]}},
+        "y": {"field": "total_prod_per_capita", "type": "quantitative", "title": "Production per capita (tonnes/person)"},
+        "color": {"value": "red"},
+        "strokeWidth": {"value": 5},
+        "tooltip": [
+          {"field": "Year"},
+          {"field": "total_prod_per_capita", "type": "quantitative", "title": "Global production per capita (tonnes/person)", "format": ".3f"}
+        ]
+      }
+    }
+  ]
+}

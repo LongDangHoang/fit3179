@@ -45,11 +45,10 @@
           "as": ["geo"]
         },
         {"type": "filter", "expr": "datum['Item Hierarchy Type'] == 'Cereals'"},
-        {"type": "filter", "expr": "datum['Unit'] == 'hg/ha'"},
         {"type": "filter", "expr": "datum.Year == Year_Filter"},
         {
           "type": "formula",
-          "expr": "datum.Quantity / 10000", 
+          "expr": "datum.Quantity", 
           "as": "Yield (tonnes/ha)"
         }
       ]

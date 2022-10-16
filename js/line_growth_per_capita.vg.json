@@ -3,10 +3,9 @@
   "description": "Plot showing average data with raw values in the background.",
   "background": "white",
   "padding": 5,
-  "width": 200,
   "height": 200,
-  "style": "cell",
   "data": [
+    {"name": "time_brush_store"},
     {
       "name": "source_0",
       "url": "https://raw.githubusercontent.com/LongDangHoang/fit3179/master/data/processed/production_major_categories_per_country_2000-2020.csv",
@@ -35,6 +34,10 @@
         {
           "type": "filter",
           "expr": "isValid(datum[\"Year\"]) && isFinite(+datum[\"Year\"]) && isValid(datum[\"quantity_per_capita\"]) && isFinite(+datum[\"quantity_per_capita\"])"
+        },
+        {
+          "type": "filter",
+          "expr": "isValid(datum[\"Year\"]) && isFinite(+datum[\"Year\"]) && isValid(datum[\"quantity_per_capita\"]) && isFinite(+datum[\"quantity_per_capita\"])"
         }
       ]
     },
@@ -58,6 +61,18 @@
     }
   ],
   "signals": [
+    {"name": "childWidth", "value": 200},
+    {
+      "name": "unit",
+      "value": {},
+      "on": [
+        {"events": "mousemove", "update": "isTuple(group()) ? group() : unit"}
+      ]
+    },
+    {
+      "name": "time_brush",
+      "update": "vlSelectionResolve(\"time_brush_store\", \"union\")"
+    },
     {
       "name": "Product",
       "value": "Cereals",
@@ -70,7 +85,7 @@
           "Meat and meat products",
           "Fruits and nuts"
         ],
-        "name": "Product Selection: "
+        "name": "Product: "
       }
     },
     {
@@ -86,65 +101,482 @@
           "Africa",
           "Oceania"
         ],
-        "name": "Continent Selection: "
+        "name": "Continent: "
       }
     }
   ],
+  "layout": {"padding": 20, "bounds": "full", "align": "each"},
   "marks": [
     {
-      "name": "layer_0_marks",
-      "type": "symbol",
-      "style": ["point"],
-      "from": {"data": "data_0"},
+      "type": "group",
+      "name": "concat_0_group",
+      "title": {"text": "Production per capita over time", "frame": "group"},
+      "style": "cell",
       "encode": {
         "update": {
-          "opacity": {"value": 0.1},
-          "fill": {"value": "transparent"},
-          "stroke": {"value": "#4c78a8"},
-          "ariaRoleDescription": {"value": "point"},
-          "description": {
-            "signal": "\"Year: \" + (format(datum[\"Year\"], \"\")) + \"; Production per capita (tonnes/person): \" + (format(datum[\"quantity_per_capita\"], \"\"))"
-          },
-          "x": {"scale": "x", "field": "Year"},
-          "y": {"scale": "y", "field": "quantity_per_capita"}
+          "width": {"signal": "childWidth"},
+          "height": {"signal": "height"}
         }
-      }
-    },
-    {
-      "name": "layer_1_marks",
-      "type": "line",
-      "style": ["line"],
-      "sort": {"field": "datum[\"Year\"]"},
-      "from": {"data": "data_1"},
-      "encode": {
-        "update": {
-          "stroke": {"value": "red"},
-          "strokeWidth": {"value": 5},
-          "tooltip": {
-            "signal": "{\"Year\": isValid(datum[\"Year\"]) ? datum[\"Year\"] : \"\"+datum[\"Year\"], \"Global production per capita (tonnes/person)\": format(datum[\"total_prod_per_capita\"], \".3f\")}"
-          },
-          "description": {
-            "signal": "\"Year: \" + (format(datum[\"Year\"], \"\")) + \"; total_prod_per_capita: \" + (format(datum[\"total_prod_per_capita\"], \"\")) + \"; Global production per capita (tonnes/person): \" + (format(datum[\"total_prod_per_capita\"], \".3f\"))"
-          },
-          "x": {"scale": "x", "field": "Year"},
-          "y": {"scale": "y", "field": "total_prod_per_capita"},
-          "defined": {
-            "signal": "isValid(datum[\"Year\"]) && isFinite(+datum[\"Year\"]) && isValid(datum[\"total_prod_per_capita\"]) && isFinite(+datum[\"total_prod_per_capita\"])"
+      },
+      "marks": [
+        {
+          "name": "concat_0_layer_0_marks",
+          "type": "symbol",
+          "clip": true,
+          "style": ["point"],
+          "interactive": false,
+          "from": {"data": "data_0"},
+          "encode": {
+            "update": {
+              "opacity": {"value": 0.7},
+              "fill": {"value": "transparent"},
+              "stroke": {"value": "#4c78a8"},
+              "ariaRoleDescription": {"value": "point"},
+              "description": {
+                "signal": "\"Year: \" + (format(datum[\"Year\"], \"\")) + \"; Production per capita (tonnes/person): \" + (format(datum[\"quantity_per_capita\"], \"\")) + \"; Area: \" + (isValid(datum[\"Area\"]) ? datum[\"Area\"] : \"\"+datum[\"Area\"])"
+              },
+              "x": {"scale": "concat_0_x", "field": "Year"},
+              "y": {"scale": "concat_0_y", "field": "quantity_per_capita"}
+            }
+          }
+        },
+        {
+          "name": "concat_0_layer_1_marks",
+          "type": "line",
+          "clip": true,
+          "style": ["line"],
+          "sort": {"field": "datum[\"Year\"]"},
+          "interactive": true,
+          "from": {"data": "data_1"},
+          "encode": {
+            "update": {
+              "stroke": {"value": "red"},
+              "strokeWidth": {"value": 5},
+              "tooltip": {
+                "signal": "{\"Year\": isValid(datum[\"Year\"]) ? datum[\"Year\"] : \"\"+datum[\"Year\"], \"Global production per capita (tonnes/person)\": format(datum[\"total_prod_per_capita\"], \".3f\")}"
+              },
+              "description": {
+                "signal": "\"Year: \" + (format(datum[\"Year\"], \"\")) + \"; Production per capita (tonnes/person): \" + (format(datum[\"total_prod_per_capita\"], \"\")) + \"; Global production per capita (tonnes/person): \" + (format(datum[\"total_prod_per_capita\"], \".3f\"))"
+              },
+              "x": {"scale": "concat_0_x", "field": "Year"},
+              "y": {"scale": "concat_0_y", "field": "total_prod_per_capita"},
+              "defined": {
+                "signal": "isValid(datum[\"Year\"]) && isFinite(+datum[\"Year\"]) && isValid(datum[\"total_prod_per_capita\"]) && isFinite(+datum[\"total_prod_per_capita\"])"
+              }
+            }
           }
         }
-      }
+      ],
+      "axes": [
+        {
+          "scale": "concat_0_x",
+          "orient": "bottom",
+          "gridScale": "concat_0_y",
+          "grid": true,
+          "tickCount": {"signal": "ceil(childWidth/40)"},
+          "domain": false,
+          "labels": false,
+          "aria": false,
+          "maxExtent": 0,
+          "minExtent": 0,
+          "ticks": false,
+          "zindex": 0
+        },
+        {
+          "scale": "concat_0_y",
+          "orient": "left",
+          "gridScale": "concat_0_x",
+          "grid": true,
+          "tickCount": {"signal": "ceil(height/40)"},
+          "domain": false,
+          "labels": false,
+          "aria": false,
+          "maxExtent": 0,
+          "minExtent": 0,
+          "ticks": false,
+          "zindex": 0
+        },
+        {
+          "scale": "concat_0_x",
+          "orient": "bottom",
+          "grid": false,
+          "title": "Year",
+          "format": "",
+          "labelFlush": true,
+          "labelOverlap": true,
+          "tickCount": {"signal": "ceil(childWidth/40)"},
+          "zindex": 0
+        },
+        {
+          "scale": "concat_0_y",
+          "orient": "left",
+          "grid": false,
+          "title": "Production per capita (tonnes/person)",
+          "labelOverlap": true,
+          "tickCount": {"signal": "ceil(height/40)"},
+          "zindex": 0
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "name": "concat_1_group",
+      "title": {"text": "Drag here to filter the right plot", "frame": "group"},
+      "style": "cell",
+      "encode": {
+        "update": {
+          "width": {"signal": "childWidth"},
+          "height": {"signal": "height"}
+        }
+      },
+      "signals": [
+        {
+          "name": "time_brush_x",
+          "value": [],
+          "on": [
+            {
+              "events": {
+                "source": "scope",
+                "type": "mousedown",
+                "filter": [
+                  "!event.item || event.item.mark.name !== \"time_brush_brush\""
+                ]
+              },
+              "update": "[x(unit), x(unit)]"
+            },
+            {
+              "events": {
+                "source": "window",
+                "type": "mousemove",
+                "consume": true,
+                "between": [
+                  {
+                    "source": "scope",
+                    "type": "mousedown",
+                    "filter": [
+                      "!event.item || event.item.mark.name !== \"time_brush_brush\""
+                    ]
+                  },
+                  {"source": "window", "type": "mouseup"}
+                ]
+              },
+              "update": "[time_brush_x[0], clamp(x(unit), 0, childWidth)]"
+            },
+            {
+              "events": {"signal": "time_brush_scale_trigger"},
+              "update": "[scale(\"concat_1_x\", time_brush_Year[0]), scale(\"concat_1_x\", time_brush_Year[1])]"
+            },
+            {
+              "events": [{"source": "view", "type": "dblclick"}],
+              "update": "[0, 0]"
+            },
+            {
+              "events": {"signal": "time_brush_translate_delta"},
+              "update": "clampRange(panLinear(time_brush_translate_anchor.extent_x, time_brush_translate_delta.x / span(time_brush_translate_anchor.extent_x)), 0, childWidth)"
+            },
+            {
+              "events": {"signal": "time_brush_zoom_delta"},
+              "update": "clampRange(zoomLinear(time_brush_x, time_brush_zoom_anchor.x, time_brush_zoom_delta), 0, childWidth)"
+            }
+          ]
+        },
+        {
+          "name": "time_brush_Year",
+          "on": [
+            {
+              "events": {"signal": "time_brush_x"},
+              "update": "time_brush_x[0] === time_brush_x[1] ? null : invert(\"concat_1_x\", time_brush_x)"
+            }
+          ]
+        },
+        {
+          "name": "time_brush_scale_trigger",
+          "value": {},
+          "on": [
+            {
+              "events": [{"scale": "concat_1_x"}],
+              "update": "(!isArray(time_brush_Year) || (+invert(\"concat_1_x\", time_brush_x)[0] === +time_brush_Year[0] && +invert(\"concat_1_x\", time_brush_x)[1] === +time_brush_Year[1])) ? time_brush_scale_trigger : {}"
+            }
+          ]
+        },
+        {
+          "name": "time_brush_tuple",
+          "on": [
+            {
+              "events": [{"signal": "time_brush_Year"}],
+              "update": "time_brush_Year ? {unit: \"concat_1\", fields: time_brush_tuple_fields, values: [time_brush_Year]} : null"
+            }
+          ]
+        },
+        {
+          "name": "time_brush_tuple_fields",
+          "value": [{"field": "Year", "channel": "x", "type": "R"}]
+        },
+        {
+          "name": "time_brush_translate_anchor",
+          "value": {},
+          "on": [
+            {
+              "events": [
+                {
+                  "source": "scope",
+                  "type": "mousedown",
+                  "markname": "time_brush_brush"
+                }
+              ],
+              "update": "{x: x(unit), y: y(unit), extent_x: slice(time_brush_x)}"
+            }
+          ]
+        },
+        {
+          "name": "time_brush_translate_delta",
+          "value": {},
+          "on": [
+            {
+              "events": [
+                {
+                  "source": "window",
+                  "type": "mousemove",
+                  "consume": true,
+                  "between": [
+                    {
+                      "source": "scope",
+                      "type": "mousedown",
+                      "markname": "time_brush_brush"
+                    },
+                    {"source": "window", "type": "mouseup"}
+                  ]
+                }
+              ],
+              "update": "{x: time_brush_translate_anchor.x - x(unit), y: time_brush_translate_anchor.y - y(unit)}"
+            }
+          ]
+        },
+        {
+          "name": "time_brush_zoom_anchor",
+          "on": [
+            {
+              "events": [
+                {
+                  "source": "scope",
+                  "type": "wheel",
+                  "consume": true,
+                  "markname": "time_brush_brush"
+                }
+              ],
+              "update": "{x: x(unit), y: y(unit)}"
+            }
+          ]
+        },
+        {
+          "name": "time_brush_zoom_delta",
+          "on": [
+            {
+              "events": [
+                {
+                  "source": "scope",
+                  "type": "wheel",
+                  "consume": true,
+                  "markname": "time_brush_brush"
+                }
+              ],
+              "force": true,
+              "update": "pow(1.001, event.deltaY * pow(16, event.deltaMode))"
+            }
+          ]
+        },
+        {
+          "name": "time_brush_modify",
+          "on": [
+            {
+              "events": {"signal": "time_brush_tuple"},
+              "update": "modify(\"time_brush_store\", time_brush_tuple, true)"
+            }
+          ]
+        }
+      ],
+      "marks": [
+        {
+          "name": "time_brush_brush_bg",
+          "type": "rect",
+          "clip": true,
+          "encode": {
+            "enter": {
+              "fill": {"value": "#333"},
+              "fillOpacity": {"value": 0.125}
+            },
+            "update": {
+              "x": [
+                {
+                  "test": "data(\"time_brush_store\").length && data(\"time_brush_store\")[0].unit === \"concat_1\"",
+                  "signal": "time_brush_x[0]"
+                },
+                {"value": 0}
+              ],
+              "y": [
+                {
+                  "test": "data(\"time_brush_store\").length && data(\"time_brush_store\")[0].unit === \"concat_1\"",
+                  "value": 0
+                },
+                {"value": 0}
+              ],
+              "x2": [
+                {
+                  "test": "data(\"time_brush_store\").length && data(\"time_brush_store\")[0].unit === \"concat_1\"",
+                  "signal": "time_brush_x[1]"
+                },
+                {"value": 0}
+              ],
+              "y2": [
+                {
+                  "test": "data(\"time_brush_store\").length && data(\"time_brush_store\")[0].unit === \"concat_1\"",
+                  "field": {"group": "height"}
+                },
+                {"value": 0}
+              ]
+            }
+          }
+        },
+        {
+          "name": "concat_1_marks",
+          "type": "line",
+          "style": ["line"],
+          "sort": {"field": "datum[\"Year\"]"},
+          "interactive": true,
+          "from": {"data": "data_1"},
+          "encode": {
+            "update": {
+              "stroke": {"value": "red"},
+              "strokeWidth": {"value": 5},
+              "tooltip": {
+                "signal": "{\"Year\": isValid(datum[\"Year\"]) ? datum[\"Year\"] : \"\"+datum[\"Year\"], \"Global production per capita (tonnes/person)\": format(datum[\"total_prod_per_capita\"], \".3f\")}"
+              },
+              "description": {
+                "signal": "\"Year: \" + (format(datum[\"Year\"], \"\")) + \"; Production per capita (tonnes/person): \" + (format(datum[\"total_prod_per_capita\"], \"\")) + \"; Global production per capita (tonnes/person): \" + (format(datum[\"total_prod_per_capita\"], \".3f\"))"
+              },
+              "x": {"scale": "concat_1_x", "field": "Year"},
+              "y": {"scale": "concat_1_y", "field": "total_prod_per_capita"},
+              "defined": {
+                "signal": "isValid(datum[\"Year\"]) && isFinite(+datum[\"Year\"]) && isValid(datum[\"total_prod_per_capita\"]) && isFinite(+datum[\"total_prod_per_capita\"])"
+              }
+            }
+          }
+        },
+        {
+          "name": "time_brush_brush",
+          "type": "rect",
+          "clip": true,
+          "encode": {
+            "enter": {"fill": {"value": "transparent"}},
+            "update": {
+              "x": [
+                {
+                  "test": "data(\"time_brush_store\").length && data(\"time_brush_store\")[0].unit === \"concat_1\"",
+                  "signal": "time_brush_x[0]"
+                },
+                {"value": 0}
+              ],
+              "y": [
+                {
+                  "test": "data(\"time_brush_store\").length && data(\"time_brush_store\")[0].unit === \"concat_1\"",
+                  "value": 0
+                },
+                {"value": 0}
+              ],
+              "x2": [
+                {
+                  "test": "data(\"time_brush_store\").length && data(\"time_brush_store\")[0].unit === \"concat_1\"",
+                  "signal": "time_brush_x[1]"
+                },
+                {"value": 0}
+              ],
+              "y2": [
+                {
+                  "test": "data(\"time_brush_store\").length && data(\"time_brush_store\")[0].unit === \"concat_1\"",
+                  "field": {"group": "height"}
+                },
+                {"value": 0}
+              ],
+              "stroke": [
+                {
+                  "test": "time_brush_x[0] !== time_brush_x[1]",
+                  "value": "white"
+                },
+                {"value": null}
+              ]
+            }
+          }
+        }
+      ],
+      "axes": [
+        {
+          "scale": "concat_1_x",
+          "orient": "bottom",
+          "gridScale": "concat_1_y",
+          "grid": true,
+          "tickCount": {"signal": "ceil(childWidth/40)"},
+          "domain": false,
+          "labels": false,
+          "aria": false,
+          "maxExtent": 0,
+          "minExtent": 0,
+          "ticks": false,
+          "zindex": 0
+        },
+        {
+          "scale": "concat_1_y",
+          "orient": "left",
+          "gridScale": "concat_1_x",
+          "grid": true,
+          "tickCount": {"signal": "ceil(height/40)"},
+          "domain": false,
+          "labels": false,
+          "aria": false,
+          "maxExtent": 0,
+          "minExtent": 0,
+          "ticks": false,
+          "zindex": 0
+        },
+        {
+          "scale": "concat_1_x",
+          "orient": "bottom",
+          "grid": false,
+          "title": "Year",
+          "format": "",
+          "labelFlush": true,
+          "labelOverlap": true,
+          "tickCount": {"signal": "ceil(childWidth/40)"},
+          "zindex": 0
+        },
+        {
+          "scale": "concat_1_y",
+          "orient": "left",
+          "grid": false,
+          "title": "Production per capita (tonnes/person)",
+          "labelOverlap": true,
+          "tickCount": {"signal": "ceil(height/40)"},
+          "zindex": 0
+        }
+      ]
     }
   ],
   "scales": [
     {
-      "name": "x",
+      "name": "concat_0_x",
       "type": "linear",
-      "domain": [2000, 2020],
-      "range": [0, {"signal": "width"}],
+      "domain": {
+        "fields": [
+          {"data": "data_0", "field": "Year"},
+          {"data": "data_1", "field": "Year"}
+        ]
+      },
+      "domainRaw": {"signal": "time_brush[\"Year\"]"},
+      "range": [0, {"signal": "childWidth"}],
+      "nice": true,
       "zero": false
     },
     {
-      "name": "y",
+      "name": "concat_0_y",
       "type": "linear",
       "domain": {
         "fields": [
@@ -157,6 +589,21 @@
       "zero": true
     },
     {
+      "name": "concat_1_x",
+      "type": "linear",
+      "domain": [2000, 2020],
+      "range": [0, {"signal": "childWidth"}],
+      "zero": false
+    },
+    {
+      "name": "concat_1_y",
+      "type": "linear",
+      "domain": {"data": "data_1", "field": "total_prod_per_capita"},
+      "range": [{"signal": "height"}, 0],
+      "nice": true,
+      "zero": true
+    }, 
+    {
       "name": "legend",
       "type": "ordinal",
       "domain": [
@@ -164,56 +611,6 @@
         "Individual country"
       ],
       "range": ["red", "blue"]
-    }
-  ],
-  "axes": [
-    {
-      "scale": "x",
-      "orient": "bottom",
-      "gridScale": "y",
-      "grid": true,
-      "tickCount": {"signal": "ceil(width/40)"},
-      "domain": false,
-      "labels": false,
-      "aria": false,
-      "maxExtent": 0,
-      "minExtent": 0,
-      "ticks": false,
-      "zindex": 0
-    },
-    {
-      "scale": "y",
-      "orient": "left",
-      "gridScale": "x",
-      "grid": true,
-      "tickCount": {"signal": "ceil(height/40)"},
-      "domain": false,
-      "labels": false,
-      "aria": false,
-      "maxExtent": 0,
-      "minExtent": 0,
-      "ticks": false,
-      "zindex": 0
-    },
-    {
-      "scale": "x",
-      "orient": "bottom",
-      "grid": false,
-      "title": "Year",
-      "format": "",
-      "labelFlush": true,
-      "labelOverlap": true,
-      "tickCount": {"signal": "ceil(width/40)"},
-      "zindex": 0
-    },
-    {
-      "scale": "y",
-      "orient": "left",
-      "grid": false,
-      "title": "Production per capita (tonnes/person)",
-      "labelOverlap": true,
-      "tickCount": {"signal": "ceil(height/40)"},
-      "zindex": 0
     }
   ],
   "legends": [

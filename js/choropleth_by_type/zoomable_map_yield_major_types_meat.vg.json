@@ -45,11 +45,10 @@
           "as": ["geo"]
         },
         {"type": "filter", "expr": "datum['Item Hierarchy Type'] == 'Meat and meat products'"},
-        {"type": "filter", "expr": "datum['Unit'] == 'hg/An'"},
         {"type": "filter", "expr": "datum.Year == Year_Filter"},
         {
           "type": "formula",
-          "expr": "datum.Quantity / 10000", 
+          "expr": "datum.Quantity", 
           "as": "Yield (tonnes/animal)"
         }
       ]
@@ -206,7 +205,7 @@
     {
       "name": "color",
       "type": "quantize",
-      "domain": [0, 10],
+      "domain": [0, 0.2],
       "range": {
         "scheme": "yellowgreenblue", "count": 10
       }
