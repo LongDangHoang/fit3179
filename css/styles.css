@@ -37,7 +37,7 @@ body *{
   
   .pure-g {
     display: flex;
-    align-items: top;
+    align-items: center;
     margin-bottom: 50px;
   }
 
