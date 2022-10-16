@@ -84,7 +84,7 @@
               "field": "Item Hierarchy Type",
               "type": "nominal",
               "scale": {
-                "domain": ["Cereals", "Fruits and nuts", "Vegetables", "Meat and meat products", "Dairy and egg"]
+                "domain": ["Cereals", "Dairy and egg", "Fruits and nuts", "Meat and meat products", "Vegetables"]
               }
             }
           },

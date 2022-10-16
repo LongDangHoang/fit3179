@@ -1,10 +1,29 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "data": {
+    "url": "https://raw.githubusercontent.com/LongDangHoang/fit3179/master/data/processed/production_yield_global_2000_2020.csv"
+  },
+
+  "params": [
+    {
+      "name": "Product",
+      "value": "Cereals",
+      "bind": {
+        "input": "select",
+        "options": [
+          "Cereals",
+          "Vegetables",
+          "Dairy and egg",
+          "Meat and meat products",
+          "Fruits and nuts"
+        ],
+        "name": "Product: "
+      }
+    }
+  ],
+
   "hconcat": [
     {
-      "data": {
-        "url": "https://raw.githubusercontent.com/LongDangHoang/fit3179/master/data/processed/production_major_categories_per_country_2000-2020.csv"
-      },
       "title": {
         "text": ["Total production (billion tonnes)", "of all countries"]
       },
@@ -20,11 +39,11 @@
         }
       ],
       "transform": [
-        {"calculate": "datum.Quantity / 1e9", "as": "Production (billion tonnes)"}
+        {"calculate": "datum['Production quantity'] / 1e9", "as": "Production (billion tonnes)"}
       ],
       "encoding": {
         "x": {"field": "Year", "type": "quantitative", "axis": {"format": ""}},
-        "y": {"aggregate": "sum", "field": "Production (billion tonnes)", "title": "Total production (billion tonnes)"},
+        "y": {"aggregate": "sum", "field": "Production (billion tonnes)", "type": "quantitative"},
         "color": {"field": "Item Hierarchy Type", "type": "nominal"},
         "tooltip": [
           {"field": "Year", "type": "quantitative"},
@@ -38,21 +57,23 @@
       }
     },
     {
-      "data": {
-        "url": "https://raw.githubusercontent.com/LongDangHoang/fit3179/master/data/processed/yield_major_categories_per_country_2000-2020.csv"
-      },
       "title": {
         "text": ["Average yield (tonnes/producing unit)", "of all countries"]
       },
+
       "transform": [
-        {"calculate": "datum.Quantity", "as": "Yield (tonnes/producing unit)"}
+        {"filter": "datum['Item Hierarchy Type'] === Product"},
+        {
+          "calculate": "datum['Production quantity'] / datum['Producing unit quantity']",
+          "as": "Yield (tonnes/unit)"
+        }
       ],
 
       "layer": [
         {
           "encoding": {
             "x": {"field": "Year", "type": "quantitative", "axis": {"format": ""}},
-            "y": {"aggregate": "average", "field": "Yield (tonnes/producing unit)", "title": "Average yield (tonnes/producing unit)"},
+            "y": {"field": "Yield (tonnes/unit)", "type": "quantitative"},
             "color": {"field": "Item Hierarchy Type", "type": "nominal", "legend": {"orient": "right"}}
           },
           "layer": [
@@ -98,25 +119,17 @@
             {
               "transform": [
                 {
-                  "joinaggregate": [{
-                    "op": "mean",
-                    "field": "Yield (tonnes/producing unit)",
-                    "as": "average_yield"
-                  }],
-                  "groupby": ["Item Hierarchy Type"]
-                },
-                {
                   "window": [{"op": "rank", "as": "ranking"}],
                   "groupby": ["Item Hierarchy Type"]
                 },
                 {
                   "filter": "datum.ranking == 1"
                 },
-                {"calculate": "format(datum.average_yield, '.3f') + ' tonnes/producing unit'", "as": "text_annotation"}
+                {"calculate": "format(datum['Yield (tonnes/unit)'], '.3f')", "as": "text_annotation"}
               ],
               "encoding": {
                 "text": {"field": "text_annotation"},
-                "y": {"field": "average_yield", "type": "quantitative"},
+                "y": {"field": "Yield (tonnes/unit)", "type": "quantitative"},
                 "color": {"field": "Item Hierarchy Type", "type": "nominal"}
               },
               "layer": [
