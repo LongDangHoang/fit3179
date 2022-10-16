@@ -1,0 +1,235 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "data":{
+      "url": "https://raw.githubusercontent.com/LongDangHoang/fit3179/master/data/processed/yield_major_categories_per_country_2000-2020.csv"
+    },
+  
+    "params": [
+      {
+        "name": "product",
+        "value": "Cereals",
+        "bind": {
+          "input": "select",
+          "options": [
+            "Cereals",
+            "Vegetables",
+            "Dairy and egg",
+            "Meat and meat products",
+            "Fruits and nuts"
+          ],
+          "name": "Product: "
+        }
+      }
+    ],
+
+    "hconcat": [
+      {
+        "title": "Top 5 most productive countries for selected product",
+        "transform": [
+          {"filter": "datum['Item Hierarchy Type'] == product"},
+          {"calculate": "toNumber(datum.Quantity)", "as": "num_quantity"},
+          {"filter": "isValid(datum.Quantity) & datum.Quantity > 0"},
+          {
+            "window": [{"op": "rank", "as": "rank"}],
+            "sort": [{"field": "num_quantity", "order": "descending"}],
+            "groupby": ["Year"]
+          },
+          {
+            "window": [{"field": "rank", "op": "first_value", "as": "top_rank"}],
+            "sort": [{"field": "toNumber(Year)", "order": "descending"}],
+            "groupby": ["Area"]
+          },
+          {"filter": "datum.top_rank <= 5"}
+        ],
+  
+        "encoding": {
+          "x": {"field": "Year", "type": "ordinal"},
+          "y": {"field": "Quantity", "type": "quantitative", "title": "Productivity (tonnes/producing unit)"},
+          "detail": {"field": "Area", "type": "nominal"},
+          "color": {
+            "condition": {
+              "test": "hover_top.Area == datum.Area",
+              "value": "rgb(31, 119, 180)"
+            },
+            "value": "grey"
+          },
+          "opacity": {
+            "condition": {
+              "test": "hover_top.Area == datum.Area",
+              "value": 1
+            },
+            "value": 0.2
+          }
+        },
+  
+        "layer": [
+          {
+            "description": "transparent layer to make it easier to trigger selection",
+            "params": [{
+              "name": "hover_top",
+              "select": {
+                "type": "point",
+                "nearest": true,
+                "fields": ["Area", "Year"],
+                "on": "mouseover",
+                "clear": "mouseleave"
+              }
+            }],
+            "mark": {"type": "point", "strokeWidth": 8, "stroke": "transparent"}
+          },
+          {"mark": {"type": "line", "point": true}},
+          {
+            "layer": [
+              {
+                "transform": [
+                  {"joinaggregate": [{"field": "Year", "op": "max", "as": "last_year"}]},
+                  {"filter": "datum.Year == datum.last_year"}
+                ],
+                "mark": {
+                  "type": "text",
+                  "align": "right",
+                  "dx": 0,
+                  "dy": -10
+                },
+                "encoding": {
+                  "text": {"field": "Area"},
+                  "opacity": {
+                    "condition": {
+                      "test": "datum.Area == hover_top.Area",
+                      "value": 1
+                    },
+                    "value": 0
+                  }
+                }
+              },
+              {
+                "transform": [
+                  {"filter": "datum.Year == hover_top.Year"}
+                ],
+                "mark": {
+                  "type": "text",
+                  "align": "center",
+                  "dx": 0,
+                  "dy": 10
+                },
+                "encoding": {
+                  "text": {"field": "Quantity", "format": ".2f"},
+                  "opacity": {
+                    "condition": {
+                      "test": "datum.Area == hover_top.Area",
+                      "value": 1
+                    },
+                    "value": 0
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Top 5 least productive countries for selected product",
+        "transform": [
+          {"filter": "datum['Item Hierarchy Type'] == product"},
+          {"calculate": "toNumber(datum.Quantity)", "as": "num_quantity"},
+          {"filter": "isValid(datum.Quantity) & datum.Quantity > 0"},
+          {
+            "window": [{"op": "rank", "as": "rank"}],
+            "sort": [{"field": "num_quantity", "order": "ascending"}],
+            "groupby": ["Year"]
+          },
+          {
+            "window": [{"field": "rank", "op": "first_value", "as": "top_rank"}],
+            "sort": [{"field": "toNumber(Year)", "order": "descending"}],
+            "groupby": ["Area"]
+          },
+          {"filter": "datum.top_rank <= 5"}
+        ],
+  
+        "encoding": {
+          "x": {"field": "Year", "type": "ordinal"},
+          "y": {"field": "Quantity", "type": "quantitative", "title": "Productivity (tonnes/producing unit)"},
+          "detail": {"field": "Area", "type": "nominal"},
+          "color": {
+            "condition": {
+              "test": "hover_top.Area == datum.Area",
+              "value": "rgb(214, 39, 40)"
+            },
+            "value": "grey"
+          },
+          "opacity": {
+            "condition": {
+              "test": "hover_top.Area == datum.Area",
+              "value": 1
+            },
+            "value": 0.2
+          }
+        },
+  
+        "layer": [
+          {
+            "description": "transparent layer to make it easier to trigger selection",
+            "params": [{
+              "name": "hover_top",
+              "select": {
+                "type": "point",
+                "nearest": true,
+                "fields": ["Area", "Year"],
+                "on": "mouseover",
+                "clear": "mouseleave"
+              }
+            }],
+            "mark": {"type": "point", "strokeWidth": 8, "stroke": "transparent"}
+          },
+          {"mark": {"type": "line", "point": true}},
+          {
+            "layer": [
+              {
+                "transform": [
+                  {"joinaggregate": [{"field": "Year", "op": "max", "as": "last_year"}]},
+                  {"filter": "datum.Year == datum.last_year"}
+                ],
+                "mark": {
+                  "type": "text",
+                  "align": "right",
+                  "dx": 0,
+                  "dy": -10
+                },
+                "encoding": {
+                  "text": {"field": "Area"},
+                  "opacity": {
+                    "condition": {
+                      "test": "datum.Area == hover_top.Area",
+                      "value": 1
+                    },
+                    "value": 0
+                  }
+                }
+              },
+              {
+                "transform": [
+                  {"filter": "datum.Year == hover_top.Year"}
+                ],
+                "mark": {
+                  "type": "text",
+                  "align": "center",
+                  "dx": 0,
+                  "dy": 10
+                },
+                "encoding": {
+                  "text": {"field": "Quantity", "format": ".2f"},
+                  "opacity": {
+                    "condition": {
+                      "test": "datum.Area == hover_top.Area",
+                      "value": 1
+                    },
+                    "value": 0
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }

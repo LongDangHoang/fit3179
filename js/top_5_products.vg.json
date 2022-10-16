@@ -1,0 +1,120 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "data":{
+    "url": "https://raw.githubusercontent.com/LongDangHoang/fit3179/master/data/processed/production_all_category_no_country_2000_2020.csv"  },
+
+  "title": "Top 5 most produced products in selected year",
+  "params": [
+    {
+      "name": "Year_Filter",
+      "value": 2020,
+      "bind": {
+        "input": "range",
+        "min": 2000,
+        "max": 2020,
+        "step": 1,
+        "name": "Year"
+      }
+    }
+  ],
+
+  "transform": [
+    {"filter": "datum.Year == Year_Filter"},
+    {"filter": "isValid(datum.Quantity) & datum.Quantity > 0"},
+    {"calculate": "datum.Quantity / 1e6", "as": "Production (million tonnes)"},
+    {
+      "window": [{"op": "rank", "as": "rank"}],
+      "sort": [{"field": "Production (million tonnes)", "order": "descending"}],
+      "groupby": ["Item Hierarchy Type"]
+    },
+    {"filter": "datum.rank <= 5"}
+  ],
+
+  "hconcat": [
+    {
+      "width": 100,
+      "transform": [
+        {"filter": "datum['Item Hierarchy Type'] == 'Cereals'"}
+      ],
+      "mark": "bar",
+      "encoding": {
+        "x": {"field": "Item", "type": "nominal", "sort": "y", "title": "Product"},
+        "y": {"field": "Production (million tonnes)", "type": "quantitative"},
+        "color": {"field": "Item Hierarchy Type"},
+        "tooltip": [
+          {"field": "Year"}, 
+          {"field": "Production (million tonnes)"},
+          {"field": "Item", "title": "Product"}
+        ]
+      }
+    },
+    {
+      "width": 100,
+      "transform": [
+        {"filter": "datum['Item Hierarchy Type'] == 'Dairy and egg'"}
+      ],
+      "mark": "bar",
+      "encoding": {
+        "x": {"field": "Item", "type": "nominal", "sort": "y", "title": "Product"},
+        "y": {"field": "Production (million tonnes)", "type": "quantitative"},
+        "color": {"field": "Item Hierarchy Type"},
+        "tooltip": [
+          {"field": "Year"}, 
+          {"field": "Production (million tonnes)"},
+          {"field": "Item", "title": "Product"}
+        ]
+      }
+    },
+    {
+      "width": 100,
+      "transform": [
+        {"filter": "datum['Item Hierarchy Type'] == 'Fruits and nuts'"}
+      ],
+      "mark": "bar",
+      "encoding": {
+        "x": {"field": "Item", "type": "nominal", "sort": "y", "title": "Product"},
+        "y": {"field": "Production (million tonnes)", "type": "quantitative"},
+        "color": {"field": "Item Hierarchy Type"},
+        "tooltip": [
+          {"field": "Year"}, 
+          {"field": "Production (million tonnes)"},
+          {"field": "Item", "title": "Product"}
+        ]
+      }
+    },
+    {
+      "width": 100,
+      "transform": [
+        {"filter": "datum['Item Hierarchy Type'] == 'Meat and meat products'"}
+      ],
+      "mark": "bar",
+      "encoding": {
+        "x": {"field": "Item", "type": "nominal", "sort": "y", "title": "Product", "axis": {"labelExpr": "split(datum.label, ',')[0]"}},
+        "y": {"field": "Production (million tonnes)", "type": "quantitative"},
+        "color": {"field": "Item Hierarchy Type"},
+        "tooltip": [
+          {"field": "Year"}, 
+          {"field": "Production (million tonnes)"},
+          {"field": "Item", "title": "Product"}
+        ]
+      }
+    },
+    {
+      "width": 100,
+      "transform": [
+        {"filter": "datum['Item Hierarchy Type'] == 'Vegetables'"}
+      ],
+      "mark": "bar",
+      "encoding": {
+        "x": {"field": "Item", "type": "nominal", "sort": "y", "title": "Product"},
+        "y": {"field": "Production (million tonnes)", "type": "quantitative"},
+        "color": {"field": "Item Hierarchy Type", "legend": {"symbolType": "circle"}},
+        "tooltip": [
+          {"field": "Year"}, 
+          {"field": "Production (million tonnes)"},
+          {"field": "Item", "title": "Product"}
+        ]
+      }
+    }
+  ]
+}
