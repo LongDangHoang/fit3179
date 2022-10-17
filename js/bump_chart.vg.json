@@ -113,7 +113,7 @@
                   "dy": 10
                 },
                 "encoding": {
-                  "text": {"field": "Quantity", "format": ".2f"},
+                  "text": {"field": "Quantity", "format": ".4f"},
                   "opacity": {
                     "condition": {
                       "test": "datum.Area == hover_top.Area",
@@ -217,7 +217,7 @@
                   "dy": 10
                 },
                 "encoding": {
-                  "text": {"field": "Quantity", "format": ".2f"},
+                  "text": {"field": "Quantity", "format": ".4f"},
                   "opacity": {
                     "condition": {
                       "test": "datum.Area == hover_top.Area",

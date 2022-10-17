@@ -15,13 +15,7 @@
         {
           "type": "filter",
           "expr": "Continent === 'Show all' || datum.Continent === Continent"
-        }
-      ]
-    },
-    {
-      "name": "data_0",
-      "source": "source_0",
-      "transform": [
+        },
         {
           "type": "filter",
           "expr": "datum.Quantity > 0 && datum.Population > 1000000"
@@ -30,7 +24,13 @@
           "type": "formula",
           "expr": "datum.Quantity / datum.Population",
           "as": "quantity_per_capita"
-        },
+        }
+      ]
+    },
+    {
+      "name": "data_0",
+      "source": "source_0",
+      "transform": [
         {
           "type": "filter",
           "expr": "isValid(datum[\"Year\"]) && isFinite(+datum[\"Year\"]) && isValid(datum[\"quantity_per_capita\"]) && isFinite(+datum[\"quantity_per_capita\"])"
@@ -43,6 +43,42 @@
     },
     {
       "name": "data_1",
+      "source": "source_0",
+      "transform": [
+        {
+          "type": "filter",
+          "expr": "!isValid(time_brush.Year) || ((datum.Year <= time_brush.Year[1]) && (datum.Year >= time_brush.Year[0]))"
+        },
+        {
+          "type": "joinaggregate",
+          "as": ["max_year"],
+          "ops": ["max"],
+          "fields": ["Year"]
+        },
+        {"type": "filter", "expr": "datum.Year == datum.max_year"},
+        {
+          "type": "formula",
+          "expr": "datum.Quantity / datum.Population",
+          "as": "quantity_per_capita"
+        },
+        {
+          "type": "joinaggregate",
+          "as": ["max_quantity_per_capita"],
+          "ops": ["max"],
+          "fields": ["quantity_per_capita"]
+        },
+        {
+          "type": "filter",
+          "expr": "datum.quantity_per_capita == datum.max_quantity_per_capita"
+        },
+        {
+          "type": "filter",
+          "expr": "isValid(datum[\"Year\"]) && isFinite(+datum[\"Year\"]) && isValid(datum[\"quantity_per_capita\"]) && isFinite(+datum[\"quantity_per_capita\"])"
+        }
+      ]
+    },
+    {
+      "name": "data_2",
       "source": "source_0",
       "transform": [
         {
@@ -124,16 +160,19 @@
           "type": "symbol",
           "clip": true,
           "style": ["point"],
-          "interactive": false,
+          "interactive": true,
           "from": {"data": "data_0"},
           "encode": {
             "update": {
-              "opacity": {"value": 0.7},
+              "opacity": {"value": 0.3},
               "fill": {"value": "transparent"},
               "stroke": {"value": "#4c78a8"},
+              "tooltip": {
+                "signal": "{\"Year\": isValid(datum[\"Year\"]) ? datum[\"Year\"] : \"\"+datum[\"Year\"], \"Production per capita (tonnes/person)\": format(datum[\"quantity_per_capita\"], \"\"), \"Country\": isValid(datum[\"Area\"]) ? datum[\"Area\"] : \"\"+datum[\"Area\"]}"
+              },
               "ariaRoleDescription": {"value": "point"},
               "description": {
-                "signal": "\"Year: \" + (format(datum[\"Year\"], \"\")) + \"; Production per capita (tonnes/person): \" + (format(datum[\"quantity_per_capita\"], \"\")) + \"; Area: \" + (isValid(datum[\"Area\"]) ? datum[\"Area\"] : \"\"+datum[\"Area\"])"
+                "signal": "\"Year: \" + (format(datum[\"Year\"], \"\")) + \"; Production per capita (tonnes/person): \" + (format(datum[\"quantity_per_capita\"], \"\")) + \"; Area: \" + (isValid(datum[\"Area\"]) ? datum[\"Area\"] : \"\"+datum[\"Area\"]) + \"; Country: \" + (isValid(datum[\"Area\"]) ? datum[\"Area\"] : \"\"+datum[\"Area\"])"
               },
               "x": {"scale": "concat_0_x", "field": "Year"},
               "y": {"scale": "concat_0_y", "field": "quantity_per_capita"}
@@ -147,7 +186,7 @@
           "style": ["line"],
           "sort": {"field": "datum[\"Year\"]"},
           "interactive": true,
-          "from": {"data": "data_1"},
+          "from": {"data": "data_2"},
           "encode": {
             "update": {
               "stroke": {"value": "red"},
@@ -162,6 +201,30 @@
               "y": {"scale": "concat_0_y", "field": "total_prod_per_capita"},
               "defined": {
                 "signal": "isValid(datum[\"Year\"]) && isFinite(+datum[\"Year\"]) && isValid(datum[\"total_prod_per_capita\"]) && isFinite(+datum[\"total_prod_per_capita\"])"
+              }
+            }
+          }
+        },
+        {
+          "name": "concat_0_layer_2_marks",
+          "type": "text",
+          "clip": true,
+          "style": ["text"],
+          "interactive": false,
+          "from": {"data": "data_1"},
+          "encode": {
+            "update": {
+              "align": {"value": "right"},
+              "baseline": {"value": "middle"},
+              "dx": {"value": -7},
+              "fill": {"value": "black"},
+              "description": {
+                "signal": "\"Year: \" + (format(datum[\"Year\"], \"\")) + \"; quantity_per_capita: \" + (format(datum[\"quantity_per_capita\"], \"\")) + \"; Area: \" + (isValid(datum[\"Area\"]) ? datum[\"Area\"] : \"\"+datum[\"Area\"])"
+              },
+              "x": {"scale": "concat_0_x", "field": "Year"},
+              "y": {"scale": "concat_0_y", "field": "quantity_per_capita"},
+              "text": {
+                "signal": "isValid(datum[\"Area\"]) ? datum[\"Area\"] : \"\"+datum[\"Area\"]"
               }
             }
           }
@@ -443,7 +506,7 @@
           "style": ["line"],
           "sort": {"field": "datum[\"Year\"]"},
           "interactive": true,
-          "from": {"data": "data_1"},
+          "from": {"data": "data_2"},
           "encode": {
             "update": {
               "stroke": {"value": "red"},
@@ -567,6 +630,7 @@
       "domain": {
         "fields": [
           {"data": "data_0", "field": "Year"},
+          {"data": "data_2", "field": "Year"},
           {"data": "data_1", "field": "Year"}
         ]
       },
@@ -581,7 +645,8 @@
       "domain": {
         "fields": [
           {"data": "data_0", "field": "quantity_per_capita"},
-          {"data": "data_1", "field": "total_prod_per_capita"}
+          {"data": "data_2", "field": "total_prod_per_capita"},
+          {"data": "data_1", "field": "quantity_per_capita"}
         ]
       },
       "range": [{"signal": "height"}, 0],
@@ -598,7 +663,7 @@
     {
       "name": "concat_1_y",
       "type": "linear",
-      "domain": {"data": "data_1", "field": "total_prod_per_capita"},
+      "domain": {"data": "data_2", "field": "total_prod_per_capita"},
       "range": [{"signal": "height"}, 0],
       "nice": true,
       "zero": true

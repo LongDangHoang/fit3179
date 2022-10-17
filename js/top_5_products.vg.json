@@ -38,7 +38,7 @@
       ],
       "mark": "bar",
       "encoding": {
-        "x": {"field": "Item", "type": "nominal", "sort": "y", "title": "Product"},
+        "x": {"field": "Item", "type": "nominal", "sort": "y", "title": "Cereals"},
         "y": {"field": "Production (million tonnes)", "type": "quantitative"},
         "color": {"field": "Item Hierarchy Type"},
         "tooltip": [
@@ -55,7 +55,7 @@
       ],
       "mark": "bar",
       "encoding": {
-        "x": {"field": "Item", "type": "nominal", "sort": "y", "title": "Product"},
+        "x": {"field": "Item", "type": "nominal", "sort": "y", "title": "Dairy and egg"},
         "y": {"field": "Production (million tonnes)", "type": "quantitative"},
         "color": {"field": "Item Hierarchy Type"},
         "tooltip": [
@@ -72,7 +72,7 @@
       ],
       "mark": "bar",
       "encoding": {
-        "x": {"field": "Item", "type": "nominal", "sort": "y", "title": "Product"},
+        "x": {"field": "Item", "type": "nominal", "sort": "y", "title": "Fruits and nuts"},
         "y": {"field": "Production (million tonnes)", "type": "quantitative"},
         "color": {"field": "Item Hierarchy Type"},
         "tooltip": [
@@ -89,7 +89,7 @@
       ],
       "mark": "bar",
       "encoding": {
-        "x": {"field": "Item", "type": "nominal", "sort": "y", "title": "Product", "axis": {"labelExpr": "split(datum.label, ',')[0]"}},
+        "x": {"field": "Item", "type": "nominal", "sort": "y", "title": "Meat", "axis": {"labelExpr": "split(datum.label, ',')[0]"}},
         "y": {"field": "Production (million tonnes)", "type": "quantitative"},
         "color": {"field": "Item Hierarchy Type"},
         "tooltip": [
@@ -106,7 +106,7 @@
       ],
       "mark": "bar",
       "encoding": {
-        "x": {"field": "Item", "type": "nominal", "sort": "y", "title": "Product"},
+        "x": {"field": "Item", "type": "nominal", "sort": "y", "title": "Vegetables"},
         "y": {"field": "Production (million tonnes)", "type": "quantitative"},
         "color": {"field": "Item Hierarchy Type", "legend": {"symbolType": "circle"}},
         "tooltip": [

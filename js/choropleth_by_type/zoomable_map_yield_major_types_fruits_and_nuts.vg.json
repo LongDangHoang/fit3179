@@ -33,23 +33,88 @@
       "format": {"type": "topojson", "feature": "oceans"}
     },
     {
-      "name": "yield_csv",
+      "name": "source",
       "url": "https://raw.githubusercontent.com/LongDangHoang/fit3179/master/data/processed/yield_major_categories_per_country_2000-2020.csv",
       "format": {"type": "csv", "delimter": ","},
       "transform": [
+        {"type": "filter", "expr": "datum['Item Hierarchy Type'] == 'Fruits and nuts'"},
         {
           "type": "lookup",
           "from": "world_map",
           "key": "properties.ISO_A2",
           "fields": ["ISO-A2"],
           "as": ["geo"]
-        },
-        {"type": "filter", "expr": "datum['Item Hierarchy Type'] == 'Fruits and nuts'"},
+        }
+      ]
+    },
+    {
+      "name": "yield_csv",
+      "source": "source",
+      "transform": [
         {"type": "filter", "expr": "datum.Year == Year_Filter"},
         {
           "type": "formula",
-          "expr": "datum.Quantity", 
+          "expr": "toNumber(datum.Quantity)", 
           "as": "Yield (tonnes/ha)"
+        }
+      ]
+    },
+    {
+      "name": "annotation",
+      "source": "source",
+      "transform": [
+        {
+          "type": "filter",
+          "expr": "(datum.Year == 2000) || (datum.Year == 2020)"
+        },
+        {
+          "type": "formula",
+          "expr": "toNumber(datum.Quantity)", 
+          "as": "num_quantity"
+        },
+        {
+          "type": "window",
+          "fields": ["num_quantity"],
+          "ops": ["first_value"],
+          "as": ["quantity_2020"],
+          "frame": [null, null],
+          "sort": {"field": "Year", "order": "descending"},
+          "groupby": ["Area"]
+        },
+        {
+          "type": "window",
+          "fields": ["num_quantity"],
+          "ops": ["last_value"],
+          "as": ["quantity_2000"],
+          "frame": [null, null],
+          "sort": {"field": "Year", "order": "descending"},
+          "groupby": ["Area"]
+        },
+        {
+          "type": "formula",
+          "expr": "(datum.quantity_2020 - datum.quantity_2000)/datum.quantity_2000 * 100",
+          "as": "growth"
+        },
+        {
+          "type": "joinaggregate",
+          "fields": ["growth"],
+          "ops": ["max"],
+          "as": ["max_growth"]
+        },
+        {
+          "type": "filter",
+          "expr": "(datum.Year == 2020) && (datum.growth == datum.max_growth)"
+        },
+        {
+          "type": "formula",
+          "expr": "['Country: ' + datum.Area, 'grows productivity by ' + format(datum.growth, '.2f') + '% in 20 years']",
+          "as": "annotation_text"
+        },
+        {
+          "type": "geopoint", 
+          "projection": "projection", 
+          "fields": ["Longitude (average)", "Latitude (average)"],
+          "as": ["projected_longitude", "projected_latitude"]
         }
       ]
     }
@@ -194,8 +259,37 @@
           "fill": {"scale": "color", "field": "Yield (tonnes/ha)"},
           "stroke": {"value": "white"},
           "tooltip": {
-            "signal": "{\"Country\": isValid(datum[\"Area\"]) ? datum[\"Area\"] : \"\"+datum[\"Area\"], \"Yield (tonnes/ha)\": format(datum[\"Yield (tonnes/ha)\"], \"\")}"
+            "signal": "{\"Country\": isValid(datum[\"Area\"]) ? datum[\"Area\"] : \"\"+datum[\"Area\"], \"Yield (tonnes/ha)\": format(datum[\"Yield (tonnes/ha)\"], \".4f\")}"
           }
+        }
+      }
+    },
+    {
+      "type": "text",
+      "from": {"data": "annotation"},
+      "align": {"value": "left"},
+      "baseline": {"value": "bottom"},
+      "encode": {
+        "update": {
+          "x": {"field": "projected_longitude", "type": ""},
+          "y": {"field": "projected_latitude"},
+          "fill": {"value": "purple"},
+          "text": {
+            "signal": "datum['annotation_text']"
+          }
+        }
+      }
+    },
+    {
+      "type": "shape",
+      "style": "geoshape",
+      "from": {"data": "annotation"},
+      "transform": [
+        {"type": "geoshape", "projection": "projection", "field": "datum[\"geo\"]"}
+      ],
+      "encode": {
+        "update": {
+          "stroke": {"value": "red"}
         }
       }
     }

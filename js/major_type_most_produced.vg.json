@@ -126,7 +126,7 @@
               "params": [
                 {
                   "name": "country_select",
-                  "value": "Australia",
+                  "value": "New Zealand",
                   "select": {"type": "point", "encodings": ["description"]}
                 }
               ],
@@ -156,6 +156,23 @@
               }
             }
           ]
+        },
+        {
+          "description": "annotation",
+          "mark": {
+            "type": "text",
+            "dx": -60,
+            "dy": 20
+          },
+          "transform": [
+            {"filter": "(datum.Area == 'New Zealand') && (datum.Year == 2020) && (datum['Item Hierarchy Type'] == 'Dairy and egg')"},
+            {"calculate": "'Nearly everything New Zealand produces is Dairy and egg!'", "as": "text_annotation"}
+          ],
+          "encoding": {
+            "latitude": {"type": "quantitative", "field": "Latitude (average)"},
+            "longitude": {"type": "quantitative", "field": "Longitude (average)"},
+            "text": {"field": "text_annotation"}
+          }
         }
       ]
     },
